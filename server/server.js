@@ -1,13 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config({ path: "./config/env/config.env" });
+const routes = require("./routes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.get("/", (req, res, next) => {
-  res.send("Hello World");
-});
+app.use("/api", routes);
 
 mongoose
   .connect(process.env.MONGO_URI)
