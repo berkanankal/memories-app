@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const PostSchema = new Schema({
-  title: String,
+  title: {
+    type: String,
+    required: [true, "Title is required"],
+  },
   message: String,
   creator: String,
   tags: [String],

@@ -1,7 +1,24 @@
 const Post = require("../models/Post");
+const asyncHandler = require("express-async-handler");
 
-const getAllPosts = (req, res) => {
-  res.send("Get All Posts");
-};
+const getAllPosts = asyncHandler(async (req, res) => {
+  const posts = await Post.find();
 
-module.exports = { getAllPosts };
+  return res.status(200).json({
+    success: true,
+    data: posts,
+  });
+});
+
+const createPost = asyncHandler(async (req, res) => {
+  const information = req.body;
+
+  const post = await Post.create(information);
+
+  return res.status(201).json({
+    success: true,
+    data: post,
+  });
+});
+
+module.exports = { getAllPosts, createPost };
