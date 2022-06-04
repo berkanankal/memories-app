@@ -12,9 +12,16 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import useStyles from "./styles";
 import moment from "moment";
+import { deletePost } from "../../../redux/postsSlice";
+import { useDispatch } from "react-redux";
 
 const Post = ({ post }) => {
+  const dispatch = useDispatch();
   const classes = useStyles();
+
+  const handleDelete = (id) => {
+    dispatch(deletePost(id));
+  };
 
   return (
     <Card className={classes.card}>
@@ -38,8 +45,7 @@ const Post = ({ post }) => {
       </div>
       <div className={classes.details}>
         <Typography variant="body2" color="textSecondary" component="h2">
-          {/* {post.tags.map((tag) => `#${tag} `)} */}
-          tags
+          {post.tags.map((tag) => `#${tag} `)}
         </Typography>
       </div>
       <Typography
@@ -59,7 +65,11 @@ const Post = ({ post }) => {
         <Button size="small" color="primary">
           <ThumbUpAltIcon fontSize="small" /> Like
         </Button>
-        <Button size="small" color="primary">
+        <Button
+          size="small"
+          color="primary"
+          onClick={() => handleDelete(post._id)}
+        >
           <DeleteIcon fontSize="small" /> Delete
         </Button>
       </CardActions>

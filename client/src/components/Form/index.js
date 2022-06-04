@@ -17,10 +17,29 @@ const Form = () => {
     postImage: "",
   });
 
+  console.log(formInformations);
+
   const onInputChange = (e) => {
+    if (e.target.name === "tags") {
+      setFormInformations({
+        ...formInformations,
+        tags: e.target.value.trim().split(","),
+      });
+    } else {
+      setFormInformations({
+        ...formInformations,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
+
+  const clearInputs = () => {
     setFormInformations({
-      ...formInformations,
-      [e.target.name]: e.target.value,
+      creator: "",
+      title: "",
+      message: "",
+      tags: [],
+      postImage: "",
     });
   };
 
@@ -28,6 +47,7 @@ const Form = () => {
     e.preventDefault();
 
     dispatch(createPost(formInformations));
+    clearInputs();
   };
 
   return (
@@ -45,6 +65,7 @@ const Form = () => {
           label="Creator"
           fullWidth
           onChange={onInputChange}
+          value={formInformations.creator}
         />
         <TextField
           name="title"
@@ -52,6 +73,7 @@ const Form = () => {
           label="Title"
           fullWidth
           onChange={onInputChange}
+          value={formInformations.title}
         />
         <TextField
           name="message"
@@ -61,6 +83,7 @@ const Form = () => {
           multiline
           rows={4}
           onChange={onInputChange}
+          value={formInformations.message}
         />
         <TextField
           name="tags"
@@ -68,19 +91,24 @@ const Form = () => {
           label="Tags (coma separated)"
           fullWidth
           onChange={onInputChange}
+          value={formInformations.tags}
         />
         <div className={classes.fileInput}>resim</div>
         <Button
-          className={classes.buttonSubmit}
+          sx={{ marginBottom: 1 }}
           variant="contained"
           color="primary"
-          size="large"
           type="submit"
           fullWidth
         >
           Submit
         </Button>
-        <Button variant="contained" color="secondary" size="small" fullWidth>
+        <Button
+          variant="contained"
+          color="secondary"
+          fullWidth
+          onClick={() => clearInputs()}
+        >
           Clear
         </Button>
       </form>

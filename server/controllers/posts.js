@@ -21,4 +21,17 @@ const createPost = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { getAllPosts, createPost };
+// EĞER İDYE AİT POST YOKSA KONTROL ET
+
+const deletePost = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  await Post.findByIdAndDelete(id);
+
+  return res.status(200).json({
+    success: true,
+    message: "Post deleted successfully",
+  });
+});
+
+module.exports = { getAllPosts, createPost, deletePost };
