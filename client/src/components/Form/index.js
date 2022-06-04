@@ -1,13 +1,35 @@
-import React from "react";
+import { useState } from "react";
 import { TextField, Button, Typography, Paper } from "@mui/material";
+import { createPost } from "../../redux/postsSlice";
+import { useDispatch } from "react-redux";
 
 import useStyles from "./styles";
 
 const Form = () => {
+  const dispatch = useDispatch();
   const classes = useStyles();
+
+  const [formInformations, setFormInformations] = useState({
+    creator: "",
+    title: "",
+    message: "",
+    tags: [],
+    postImage: "",
+  });
+
+  console.log(formInformations);
+
+  const onInputChange = (e) => {
+    setFormInformations({
+      ...formInformations,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    dispatch(createPost(formInformations));
   };
 
   return (
@@ -24,8 +46,15 @@ const Form = () => {
           variant="outlined"
           label="Creator"
           fullWidth
+          onChange={onInputChange}
         />
-        <TextField name="title" variant="outlined" label="Title" fullWidth />
+        <TextField
+          name="title"
+          variant="outlined"
+          label="Title"
+          fullWidth
+          onChange={onInputChange}
+        />
         <TextField
           name="message"
           variant="outlined"
@@ -33,14 +62,16 @@ const Form = () => {
           fullWidth
           multiline
           rows={4}
+          onChange={onInputChange}
         />
         <TextField
           name="tags"
           variant="outlined"
           label="Tags (coma separated)"
           fullWidth
+          onChange={onInputChange}
         />
-        <div className={classes.fileInput}>deneme</div>
+        <div className={classes.fileInput}>resim</div>
         <Button
           className={classes.buttonSubmit}
           variant="contained"

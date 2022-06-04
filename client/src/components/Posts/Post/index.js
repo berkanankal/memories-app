@@ -12,7 +12,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import useStyles from "./styles";
 
-const Post = () => {
+const Post = ({ post }) => {
   const classes = useStyles();
 
   return (
@@ -25,8 +25,8 @@ const Post = () => {
         title="deneme"
       />
       <div className={classes.overlay}>
-        <Typography variant="h6">deneme</Typography>
-        <Typography variant="body2">deneme</Typography>
+        <Typography variant="h6">{post.creator}</Typography>
+        <Typography variant="body2">tarih saat</Typography>
       </div>
       <div className={classes.overlay2}>
         <Button style={{ color: "white" }} size="small">
@@ -35,7 +35,8 @@ const Post = () => {
       </div>
       <div className={classes.details}>
         <Typography variant="body2" color="textSecondary" component="h2">
-          deneme
+          {/* {post.tags.map((tag) => `#${tag} `)} */}
+          tags
         </Typography>
       </div>
       <Typography
@@ -44,11 +45,11 @@ const Post = () => {
         variant="h5"
         component="h2"
       >
-        deneme
+        {post.title}
       </Typography>
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          deneme
+          {post.message}
         </Typography>
       </CardContent>
       <CardActions className={classes.cardActions}>

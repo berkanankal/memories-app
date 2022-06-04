@@ -17,9 +17,11 @@ const Posts = () => {
       alignItems="stretch"
       spacing={3}
     >
-      <Grid item xs={12} sm={6} md={6}>
-        <Post />
-      </Grid>
+      {posts.map((post) => (
+        <Grid item xs={12} sm={6} md={6} key={post._id}>
+          <Post post={post} />
+        </Grid>
+      ))}
     </Grid>
   );
 };
