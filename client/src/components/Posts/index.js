@@ -1,14 +1,19 @@
-import React from "react";
+import { useEffect } from "react";
 import { Grid } from "@mui/material";
 import Post from "./Post";
 import useStyles from "./styles";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchPosts } from "../../redux/postsSlice";
 
 const Posts = () => {
+  const dispatch = useDispatch();
   const classes = useStyles();
 
   const { posts } = useSelector((state) => state.posts);
-  console.log(posts);
+
+  useEffect(() => {
+    dispatch(fetchPosts());
+  }, [dispatch]);
 
   return (
     <Grid

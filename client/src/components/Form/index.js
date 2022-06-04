@@ -17,8 +17,6 @@ const Form = () => {
     postImage: "",
   });
 
-  console.log(formInformations);
-
   const onInputChange = (e) => {
     setFormInformations({
       ...formInformations,

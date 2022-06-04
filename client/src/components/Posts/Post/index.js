@@ -11,6 +11,7 @@ import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import useStyles from "./styles";
+import moment from "moment";
 
 const Post = ({ post }) => {
   const classes = useStyles();
@@ -26,7 +27,9 @@ const Post = ({ post }) => {
       />
       <div className={classes.overlay}>
         <Typography variant="h6">{post.creator}</Typography>
-        <Typography variant="body2">tarih saat</Typography>
+        <Typography variant="body2">
+          {moment(post.createdAt).fromNow()}
+        </Typography>
       </div>
       <div className={classes.overlay2}>
         <Button style={{ color: "white" }} size="small">
