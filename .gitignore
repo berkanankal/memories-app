@@ -1,6 +1,9 @@
 # Server
 /server/config
 
+# Client
+/client/src/images
+
 # Logs
 logs
 *.log
