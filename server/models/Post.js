@@ -10,7 +10,7 @@ const PostSchema = new Schema({
   creator: String,
   tags: [String],
   selectedFile: String,
-  likeCount: { type: Number, default: 0 },
+  likes: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
 });
 

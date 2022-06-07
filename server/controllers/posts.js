@@ -34,4 +34,36 @@ const deletePost = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { getAllPosts, createPost, deletePost };
+// EĞER İDYE AİT POST YOKSA KONTROL ET
+
+const updatePost = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const information = req.body;
+
+  const post = await Post.findByIdAndUpdate(id, information, {
+    new: true,
+    runValidators: true,
+  });
+
+  return res.status(200).json({
+    success: true,
+    data: post,
+  });
+});
+
+const likePost = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const post = await Post.findById(id);
+
+  post.likes += 1;
+
+  await post.save();
+
+  return res.status(200).json({
+    success: true,
+    message: "Post liked successfully",
+  });
+});
+
+module.exports = { getAllPosts, createPost, deletePost, updatePost, likePost };

@@ -12,7 +12,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import useStyles from "./styles";
 import moment from "moment";
-import { deletePost } from "../../../redux/postsSlice";
+import { deletePost, likePost } from "../../../redux/postsSlice";
 import { useDispatch } from "react-redux";
 
 const Post = ({ post }) => {
@@ -21,6 +21,10 @@ const Post = ({ post }) => {
 
   const handleDelete = (id) => {
     dispatch(deletePost(id));
+  };
+
+  const handleLike = (id) => {
+    dispatch(likePost(id));
   };
 
   return (
@@ -62,8 +66,12 @@ const Post = ({ post }) => {
         </Typography>
       </CardContent>
       <CardActions className={classes.cardActions}>
-        <Button size="small" color="primary">
-          <ThumbUpAltIcon fontSize="small" /> Like
+        <Button
+          size="small"
+          color="primary"
+          onClick={() => handleLike(post._id)}
+        >
+          <ThumbUpAltIcon fontSize="small" /> Like {post.likes}
         </Button>
         <Button
           size="small"

@@ -16,8 +16,17 @@ export const createPost = createAsyncThunk(
 );
 
 export const deletePost = createAsyncThunk("posts/deletePost", (id) => {
-  axios.delete(`http://localhost:5004/api/posts/${id}`);
-  return id;
+  return axios
+    .delete(`http://localhost:5004/api/posts/${id}`)
+    .then(() => id)
+    .catch((err) => err.response.data);
+});
+
+export const likePost = createAsyncThunk("posts/likePost", (id) => {
+  return axios
+    .put(`http://localhost:5004/api/posts/${id}/like`)
+    .then(() => id)
+    .catch((err) => err.response.data);
 });
 
 export const postsSlice = createSlice({
@@ -35,6 +44,10 @@ export const postsSlice = createSlice({
     },
     [deletePost.fulfilled]: (state, action) => {
       state.posts = state.posts.filter((post) => post._id !== action.payload);
+    },
+    [likePost.fulfilled]: (state, action) => {
+      const post = state.posts.find((post) => post._id === action.payload);
+      post.likes++;
     },
   },
 });
