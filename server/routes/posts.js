@@ -4,13 +4,16 @@ const {
   getAllPosts,
   createPost,
   deletePost,
+  deleteAllPosts,
   updatePost,
   likePost,
 } = require("../controllers/posts");
+const upload = require("../helpers/libraries/multer");
 
 router.get("/", getAllPosts);
-router.post("/", createPost);
+router.post("/", upload.single("postImage"), createPost);
 router.delete("/:id", deletePost);
+router.delete("/", deleteAllPosts);
 router.put("/:id", updatePost);
 router.put("/:id/like", likePost);
 

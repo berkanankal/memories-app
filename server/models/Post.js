@@ -6,12 +6,24 @@ const PostSchema = new Schema({
     type: String,
     required: [true, "Title is required"],
   },
-  message: String,
+  message: {
+    type: String,
+    required: [true, "Message is required"],
+  },
   creator: String,
   tags: [String],
-  selectedFile: String,
-  likes: { type: Number, default: 0 },
-  createdAt: { type: Date, default: Date.now },
+  postImage: {
+    type: String,
+    default: "default.jpg",
+  },
+  likes: {
+    type: Number,
+    default: 0,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 module.exports = mongoose.model("Post", PostSchema);

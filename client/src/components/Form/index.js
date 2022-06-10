@@ -11,14 +11,12 @@ const Form = () => {
 
   const { currentId } = useSelector((state) => state.posts);
 
-  console.log(currentId);
-
   const [formInformations, setFormInformations] = useState({
     creator: "",
     title: "",
     message: "",
     tags: [],
-    postImage: "",
+    postImage: "default.jpg",
   });
 
   const onInputChange = (e) => {
@@ -35,20 +33,34 @@ const Form = () => {
     }
   };
 
+  const handlePhoto = (e) => {
+    setFormInformations({ ...formInformations, postImage: e.target.files[0] });
+  };
+
   const clearInputs = () => {
     setFormInformations({
       creator: "",
       title: "",
       message: "",
       tags: [],
-      postImage: "",
+      postImage: "default.jpg",
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    dispatch(createPost(formInformations));
+    const formData = new FormData();
+    formData.append("creator", formInformations.creator);
+    formData.append("title", formInformations.title);
+    formData.append("message", formInformations.message);
+    var array = formInformations.tags;
+    for (var i = 0; i < array.length; i++) {
+      formData.append("tags[]", array[i]);
+    }
+    formData.append("postImage", formInformations.postImage);
+
+    dispatch(createPost(formData));
     clearInputs();
   };
 
@@ -97,7 +109,9 @@ const Form = () => {
           onChange={onInputChange}
           value={formInformations.tags}
         />
-        <div className={classes.fileInput}>resim</div>
+        <div className={classes.fileInput}>
+          <input type="file" onChange={handlePhoto} />
+        </div>
         <Button
           sx={{ marginBottom: 1 }}
           variant="contained"

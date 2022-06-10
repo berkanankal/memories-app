@@ -13,6 +13,10 @@ const getAllPosts = asyncHandler(async (req, res) => {
 const createPost = asyncHandler(async (req, res) => {
   const information = req.body;
 
+  if (req.savedImage) {
+    information.postImage = req.savedImage;
+  }
+
   const post = await Post.create(information);
 
   return res.status(201).json({
@@ -31,6 +35,15 @@ const deletePost = asyncHandler(async (req, res) => {
   return res.status(200).json({
     success: true,
     message: "Post deleted successfully",
+  });
+});
+
+const deleteAllPosts = asyncHandler(async (req, res) => {
+  await Post.deleteMany();
+
+  return res.status(200).json({
+    success: true,
+    message: "All posts deleted successfully",
   });
 });
 
@@ -66,4 +79,11 @@ const likePost = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { getAllPosts, createPost, deletePost, updatePost, likePost };
+module.exports = {
+  getAllPosts,
+  createPost,
+  deletePost,
+  deleteAllPosts,
+  updatePost,
+  likePost,
+};

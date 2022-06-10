@@ -35,9 +35,7 @@ const Post = ({ post }) => {
     <Card className={classes.card}>
       <CardMedia
         className={classes.media}
-        image={
-          "https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png"
-        }
+        image={`http://localhost:5004/uploads/${post.postImage}`}
         title="deneme"
       />
       <div className={classes.overlay}>
