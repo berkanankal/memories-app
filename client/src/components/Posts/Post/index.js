@@ -12,7 +12,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import useStyles from "./styles";
 import moment from "moment";
-import { deletePost, likePost } from "../../../redux/postsSlice";
+import { deletePost, likePost, setCurrentId } from "../../../redux/postsSlice";
 import { useDispatch } from "react-redux";
 
 const Post = ({ post }) => {
@@ -25,6 +25,10 @@ const Post = ({ post }) => {
 
   const handleLike = (id) => {
     dispatch(likePost(id));
+  };
+
+  const handleSetCurrentId = (id) => {
+    dispatch(setCurrentId(id));
   };
 
   return (
@@ -43,8 +47,12 @@ const Post = ({ post }) => {
         </Typography>
       </div>
       <div className={classes.overlay2}>
-        <Button style={{ color: "white" }} size="small">
-          <MoreHorizIcon fontSize="default" />
+        <Button
+          style={{ color: "white" }}
+          size="small"
+          onClick={() => handleSetCurrentId(post._id)}
+        >
+          <MoreHorizIcon />
         </Button>
       </div>
       <div className={classes.details}>

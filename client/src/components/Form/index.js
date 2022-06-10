@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { TextField, Button, Typography, Paper } from "@mui/material";
 import { createPost } from "../../redux/postsSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import useStyles from "./styles";
 
 const Form = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
+
+  const { currentId } = useSelector((state) => state.posts);
+
+  console.log(currentId);
 
   const [formInformations, setFormInformations] = useState({
     creator: "",
@@ -16,8 +20,6 @@ const Form = () => {
     tags: [],
     postImage: "",
   });
-
-  console.log(formInformations);
 
   const onInputChange = (e) => {
     if (e.target.name === "tags") {
@@ -58,7 +60,9 @@ const Form = () => {
         className={`${classes.root} ${classes.form}`}
         onSubmit={handleSubmit}
       >
-        <Typography variant="h6">deneme</Typography>
+        <Typography variant="h6">
+          {currentId ? `Editing memory` : "Creating a Memory"}
+        </Typography>
         <TextField
           name="creator"
           variant="outlined"

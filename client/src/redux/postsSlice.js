@@ -33,8 +33,13 @@ export const postsSlice = createSlice({
   name: "posts",
   initialState: {
     posts: [],
+    currentId: null,
   },
-  reducers: {},
+  reducers: {
+    setCurrentId: (state, action) => {
+      state.currentId = action.payload;
+    },
+  },
   extraReducers: {
     [fetchPosts.fulfilled]: (state, action) => {
       state.posts = action.payload.data;
@@ -51,5 +56,7 @@ export const postsSlice = createSlice({
     },
   },
 });
+
+export const { setCurrentId } = postsSlice.actions;
 
 export default postsSlice.reducer;
