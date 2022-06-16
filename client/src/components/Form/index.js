@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { TextField, Button, Typography, Paper } from "@mui/material";
 import { createPost, updatePost, setCurrentId } from "../../redux/postsSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 import useStyles from "./styles";
 
@@ -19,6 +21,45 @@ const Form = () => {
     postImage: "default.jpg",
   });
 
+  const PostSchema = Yup.object().shape({
+    title: Yup.string().required("Zorunlu alan"),
+    message: Yup.string().required("Zorunlu alan"),
+  });
+
+  const {
+    handleSubmit,
+    handleBlur,
+    handleChange,
+    errors,
+    touched,
+    values,
+    setFieldValue,
+    resetForm,
+  } = useFormik({
+    initialValues: formInformations,
+    enableReinitialize: true,
+    validationSchema: PostSchema,
+    onSubmit: (values) => {
+      const formData = new FormData();
+      formData.append("creator", values.creator);
+      formData.append("title", values.title);
+      formData.append("message", values.message);
+      var array = values.tags;
+      for (var i = 0; i < array.length; i++) {
+        formData.append("tags[]", array[i]);
+      }
+      formData.append("postImage", values.postImage);
+
+      if (currentId) {
+        dispatch(updatePost(values));
+      } else {
+        dispatch(createPost(formData));
+      }
+
+      clearInputs();
+    },
+  });
+
   useEffect(() => {
     if (currentId) {
       const post = posts.find((p) => p._id === currentId);
@@ -26,25 +67,16 @@ const Form = () => {
     }
   }, [currentId, posts]);
 
-  const onInputChange = (e) => {
-    if (e.target.name === "tags") {
-      setFormInformations({
-        ...formInformations,
-        tags: e.target.value.trim().split(","),
-      });
-    } else {
-      setFormInformations({
-        ...formInformations,
-        [e.target.name]: e.target.value,
-      });
-    }
+  const handlePhoto = (e) => {
+    setFieldValue("postImage", e.target.files[0]);
   };
 
-  const handlePhoto = (e) => {
-    setFormInformations({ ...formInformations, postImage: e.target.files[0] });
+  const handleTagsInput = (e) => {
+    setFieldValue("tags", e.target.value.trim().split(","));
   };
 
   const clearInputs = () => {
+    resetForm();
     dispatch(setCurrentId(null));
     setFormInformations({
       creator: "",
@@ -53,28 +85,6 @@ const Form = () => {
       tags: [],
       postImage: "default.jpg",
     });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const formData = new FormData();
-    formData.append("creator", formInformations.creator);
-    formData.append("title", formInformations.title);
-    formData.append("message", formInformations.message);
-    var array = formInformations.tags;
-    for (var i = 0; i < array.length; i++) {
-      formData.append("tags[]", array[i]);
-    }
-    formData.append("postImage", formInformations.postImage);
-
-    if (currentId) {
-      dispatch(updatePost(formInformations));
-    } else {
-      dispatch(createPost(formData));
-    }
-
-    clearInputs();
   };
 
   return (
@@ -93,16 +103,19 @@ const Form = () => {
           variant="outlined"
           label="Creator"
           fullWidth
-          onChange={onInputChange}
-          value={formInformations.creator}
+          onChange={handleChange}
+          value={values.creator}
         />
         <TextField
           name="title"
           variant="outlined"
           label="Title"
           fullWidth
-          onChange={onInputChange}
-          value={formInformations.title}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          value={values.title}
+          error={errors.title && touched.title ? true : false}
+          helperText={errors.title && touched.title ? errors.title : null}
         />
         <TextField
           name="message"
@@ -111,16 +124,19 @@ const Form = () => {
           fullWidth
           multiline
           rows={4}
-          onChange={onInputChange}
-          value={formInformations.message}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          value={values.message}
+          error={errors.message && touched.message ? true : false}
+          helperText={errors.message && touched.message ? errors.message : null}
         />
         <TextField
           name="tags"
           variant="outlined"
           label="Tags (coma separated)"
           fullWidth
-          onChange={onInputChange}
-          value={formInformations.tags}
+          onChange={handleTagsInput}
+          value={values.tags}
         />
         <div className={classes.fileInput}>
           <input type="file" onChange={handlePhoto} />
@@ -138,7 +154,7 @@ const Form = () => {
           variant="contained"
           color="secondary"
           fullWidth
-          onClick={() => clearInputs()}
+          onClick={clearInputs}
         >
           Clear
         </Button>
