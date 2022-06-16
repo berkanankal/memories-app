@@ -29,6 +29,13 @@ export const likePost = createAsyncThunk("posts/likePost", (id) => {
     .catch((err) => err.response.data);
 });
 
+export const updatePost = createAsyncThunk("posts/updatePost", (post) => {
+  return axios
+    .put(`http://localhost:5004/api/posts/${post._id}`, post)
+    .then((res) => res.data)
+    .catch((err) => err.response.data);
+});
+
 export const postsSlice = createSlice({
   name: "posts",
   initialState: {
@@ -53,6 +60,11 @@ export const postsSlice = createSlice({
     [likePost.fulfilled]: (state, action) => {
       const post = state.posts.find((post) => post._id === action.payload);
       post.likes++;
+    },
+    [updatePost.fulfilled]: (state, action) => {
+      state.posts = state.posts.map((post) =>
+        post._id === action.payload.data._id ? action.payload.data : post
+      );
     },
   },
 });

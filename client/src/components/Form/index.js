@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextField, Button, Typography, Paper } from "@mui/material";
-import { createPost } from "../../redux/postsSlice";
+import { createPost, updatePost, setCurrentId } from "../../redux/postsSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 import useStyles from "./styles";
@@ -9,7 +9,7 @@ const Form = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
 
-  const { currentId } = useSelector((state) => state.posts);
+  const { currentId, posts } = useSelector((state) => state.posts);
 
   const [formInformations, setFormInformations] = useState({
     creator: "",
@@ -18,6 +18,13 @@ const Form = () => {
     tags: [],
     postImage: "default.jpg",
   });
+
+  useEffect(() => {
+    if (currentId) {
+      const post = posts.find((p) => p._id === currentId);
+      setFormInformations(post);
+    }
+  }, [currentId, posts]);
 
   const onInputChange = (e) => {
     if (e.target.name === "tags") {
@@ -38,6 +45,7 @@ const Form = () => {
   };
 
   const clearInputs = () => {
+    dispatch(setCurrentId(null));
     setFormInformations({
       creator: "",
       title: "",
@@ -60,7 +68,12 @@ const Form = () => {
     }
     formData.append("postImage", formInformations.postImage);
 
-    dispatch(createPost(formData));
+    if (currentId) {
+      dispatch(updatePost(formInformations));
+    } else {
+      dispatch(createPost(formData));
+    }
+
     clearInputs();
   };
 
