@@ -30,8 +30,9 @@ export const likePost = createAsyncThunk("posts/likePost", (id) => {
 });
 
 export const updatePost = createAsyncThunk("posts/updatePost", (post) => {
+  const id = post.get("_id");
   return axios
-    .put(`http://localhost:5004/api/posts/${post._id}`, post)
+    .put(`http://localhost:5004/api/posts/${id}`, post)
     .then((res) => res.data)
     .catch((err) => err.response.data);
 });

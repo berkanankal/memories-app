@@ -51,7 +51,8 @@ const Form = () => {
       formData.append("postImage", values.postImage);
 
       if (currentId) {
-        dispatch(updatePost(values));
+        formData.append("_id", values._id);
+        dispatch(updatePost(formData));
       } else {
         dispatch(createPost(formData));
       }

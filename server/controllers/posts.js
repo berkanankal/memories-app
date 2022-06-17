@@ -53,6 +53,14 @@ const updatePost = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const information = req.body;
 
+  if (req.savedImage) {
+    information.postImage = req.savedImage;
+  }
+
+  console.log(id);
+  console.log(information);
+  console.log(req.savedImage);
+
   const post = await Post.findByIdAndUpdate(id, information, {
     new: true,
     runValidators: true,
