@@ -1,36 +1,22 @@
 import React from "react";
-import { Container, Grow, Grid } from "@mui/material";
-
-import Posts from "./components/Posts";
-import Form from "./components/Form";
-
-import useStyles from "./styles";
+import { Container } from "@mui/material";
 
 import Navbar from "./components/Navbar";
+import Home from "./components/Home";
+import Auth from "./components/Auth";
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 const App = () => {
-  const classes = useStyles();
-
   return (
     <Container maxWidth="lg">
-      <Navbar />
-      <Grow in>
-        <Container>
-          <Grid
-            container
-            justify="space-between"
-            alignItems="stretch"
-            spacing={3}
-          >
-            <Grid item xs={12} sm={8}>
-              <Posts />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Form />
-            </Grid>
-          </Grid>
-        </Container>
-      </Grow>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/auth" element={<Auth />} />
+        </Routes>
+      </BrowserRouter>
     </Container>
   );
 };

@@ -1,6 +1,6 @@
 import React from "react";
 import { AppBar, Typography, Toolbar, Avatar, Button } from "@mui/material";
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import memories from "../../images/memories.png";
 import useStyles from "./styles";
@@ -12,7 +12,13 @@ const Navbar = () => {
     <AppBar className={classes.appBar} position="static" color="inherit">
       <Toolbar className={classes.toolbar}>
         <div className={classes.brandContainer}>
-          <Typography className={classes.heading} variant="h2" align="center">
+          <Typography
+            component={Link}
+            to="/"
+            className={classes.heading}
+            variant="h2"
+            align="center"
+          >
             Memories
           </Typography>
           <img
@@ -39,7 +45,7 @@ const Navbar = () => {
           </Button>
         </div>
 
-        <Button variant="contained" color="primary">
+        <Button component={Link} to="/auth" variant="contained" color="primary">
           Sign In
         </Button>
       </Toolbar>
