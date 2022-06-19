@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Avatar,
   Button,
@@ -8,23 +8,23 @@ import {
   Typography,
   Container,
 } from "@mui/material";
-
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-
 import useStyles from "./styles";
 import Input from "./Input";
+import { register } from "../../redux/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
+    surname: "",
     email: "",
     password: "",
-    confirmPassword: "",
   });
   const [isSignup, setIsSignup] = useState(false);
   const dispatch = useDispatch();
   const classes = useStyles();
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPassword = () => setShowPassword(!showPassword);
@@ -35,15 +35,14 @@ const SignUp = () => {
     setShowPassword(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(form);
 
-    // if (isSignup) {
-    //   dispatch(signup(form, history));
-    // } else {
-    //   dispatch(signin(form, history));
-    // }
+    if (isSignup) {
+      dispatch(register([form, navigate]));
+    } else {
+      console.log("login");
+    }
   };
 
   const handleChange = (e) =>
@@ -58,19 +57,19 @@ const SignUp = () => {
         <Typography component="h1" variant="h5">
           {isSignup ? "Sign up" : "Sign in"}
         </Typography>
-        <form className={classes.form} onSubmit={handleSubmit}>
+        <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2}>
             {isSignup && (
               <>
                 <Input
-                  name="firstName"
+                  name="name"
                   label="First Name"
                   handleChange={handleChange}
                   autoFocus
                   half
                 />
                 <Input
-                  name="lastName"
+                  name="surname"
                   label="Last Name"
                   handleChange={handleChange}
                   half
@@ -92,7 +91,7 @@ const SignUp = () => {
             />
             {isSignup && (
               <Input
-                name="confirmPassword"
+                name="rePassword"
                 label="Repeat Password"
                 handleChange={handleChange}
                 type="password"
