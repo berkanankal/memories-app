@@ -6,6 +6,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const Input = ({
   name,
+  value,
   handleChange,
   label,
   half,
@@ -16,6 +17,7 @@ const Input = ({
   <Grid item xs={12} sm={half ? 6 : 12}>
     <TextField
       name={name}
+      value={value}
       onChange={handleChange}
       variant="outlined"
       required

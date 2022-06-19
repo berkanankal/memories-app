@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   Avatar,
   Button,
@@ -11,7 +11,7 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import useStyles from "./styles";
 import Input from "./Input";
-import { register } from "../../redux/authSlice";
+import { register, login } from "../../redux/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
@@ -20,6 +20,7 @@ const SignUp = () => {
     surname: "",
     email: "",
     password: "",
+    rePassword: "",
   });
   const [isSignup, setIsSignup] = useState(false);
   const dispatch = useDispatch();
@@ -30,7 +31,7 @@ const SignUp = () => {
   const handleShowPassword = () => setShowPassword(!showPassword);
 
   const switchMode = () => {
-    // setForm(form);
+    clearForm();
     setIsSignup(!isSignup);
     setShowPassword(false);
   };
@@ -39,14 +40,25 @@ const SignUp = () => {
     e.preventDefault();
 
     if (isSignup) {
-      dispatch(register([form, navigate]));
+      dispatch(register([form, setIsSignup, clearForm]));
     } else {
-      console.log("login");
+      const loginForm = { email: form.email, password: form.password };
+      dispatch(login([loginForm, navigate]));
     }
   };
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
+
+  const clearForm = () => {
+    setForm({
+      name: "",
+      surname: "",
+      email: "",
+      password: "",
+      rePassword: "",
+    });
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -63,6 +75,7 @@ const SignUp = () => {
               <>
                 <Input
                   name="name"
+                  value={form.name}
                   label="First Name"
                   handleChange={handleChange}
                   autoFocus
@@ -70,6 +83,7 @@ const SignUp = () => {
                 />
                 <Input
                   name="surname"
+                  value={form.surname}
                   label="Last Name"
                   handleChange={handleChange}
                   half
@@ -78,12 +92,14 @@ const SignUp = () => {
             )}
             <Input
               name="email"
+              value={form.email}
               label="Email Address"
               handleChange={handleChange}
               type="email"
             />
             <Input
               name="password"
+              value={form.password}
               label="Password"
               handleChange={handleChange}
               type={showPassword ? "text" : "password"}
@@ -92,6 +108,7 @@ const SignUp = () => {
             {isSignup && (
               <Input
                 name="rePassword"
+                value={form.rePassword}
                 label="Repeat Password"
                 handleChange={handleChange}
                 type="password"
