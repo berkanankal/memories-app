@@ -1,108 +1,114 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { toast } from "react-toastify";
+import decode from "jwt-decode";
 
 export const register = createAsyncThunk(
   "auth/register",
-  ([formInformations, setIsSignup, clearForm], { rejectWithValue }) => {
+  (formInformations, thunkAPI) => {
     return axios
       .post("http://localhost:5004/api/auth/register", formInformations)
       .then((res) => {
-        setIsSignup(false);
-        clearForm();
-        toast.success("Kayıt işlemi başarılı", {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
         return res.data;
       })
       .catch((err) => {
         if (!err.response) {
           throw err;
         }
-        toast.error(err.response.data.message, {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
 
-        return rejectWithValue(err.response.data);
+        return thunkAPI.rejectWithValue(err.response.data);
       });
   }
 );
 
 export const login = createAsyncThunk(
   "auth/login",
-  ([formInformations, navigate], { rejectWithValue }) => {
+  (formInformations, thunkAPI) => {
     return axios
       .post("http://localhost:5004/api/auth/login", formInformations)
       .then((res) => {
-        navigate("/");
-        toast.success(`Hoşgeldin ${res.data.data.name}`, {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        return res.data;
+        localStorage.setItem("user", JSON.stringify(res.data.token));
+        const user = decode(res.data.token);
+        return user;
       })
       .catch((err) => {
         if (!err.response) {
           throw err;
         }
-        toast.error(err.response.data.message, {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
 
-        return rejectWithValue(err.response.data);
+        return thunkAPI.rejectWithValue(err.response.data);
       });
   }
 );
 
+export const logout = createAsyncThunk("auth/logout", () => {
+  localStorage.removeItem("user");
+});
+
+let user = null;
+const token = localStorage.getItem("user");
+
+if (token) {
+  const decodedToken = decode(token);
+  if (!(decodedToken.exp * 1000 < new Date().getTime())) {
+    user = decodedToken;
+  } else {
+    localStorage.removeItem("user");
+  }
+}
+
 export const authSlice = createSlice({
   name: "auth",
-  initialState: {},
-  reducers: {},
+  initialState: {
+    user: user,
+    isSignup: false,
+    isLoading: false,
+    isLoggedIn: false,
+    error: null,
+  },
+  reducers: {
+    resetInitialState: (state) => {
+      state.isSignup = false;
+      state.isLoading = false;
+      state.isLoggedIn = false;
+      state.error = null;
+    },
+  },
   extraReducers: {
-    [register.pending]: (state, action) => {
-      console.log("pending");
-    },
-    [register.fulfilled]: (state, action) => {
-      console.log("fulfilled");
-    },
-    [register.rejected]: (state, action) => {
-      console.log("rejected");
-    },
+    // LOGIN
     [login.pending]: (state, action) => {
-      console.log("pending");
+      state.isLoading = true;
     },
     [login.fulfilled]: (state, action) => {
-      console.log("fulfilled");
+      state.isLoading = false;
+      state.isLoggedIn = true;
+      state.error = null;
+      state.user = action.payload;
     },
     [login.rejected]: (state, action) => {
-      console.log("rejected");
+      state.isLoading = false;
+      state.error = action.payload.message;
+    },
+    // REGISTER
+    [register.pending]: (state, action) => {
+      state.isLoading = true;
+    },
+    [register.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.isSignup = true;
+      state.error = null;
+    },
+    [register.rejected]: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload.message;
+    },
+    // LOGOUT
+    [logout.fulfilled]: (state) => {
+      state.isLoggedIn = false;
+      state.user = null;
     },
   },
 });
 
-// export const { setCurrentId } = postsSlice.actions;
+export const { resetInitialState } = authSlice.actions;
 
 export default authSlice.reducer;

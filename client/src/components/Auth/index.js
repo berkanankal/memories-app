@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Avatar,
   Button,
@@ -11,10 +11,11 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import useStyles from "./styles";
 import Input from "./Input";
-import { register, login } from "../../redux/authSlice";
+import { register, login, resetInitialState } from "../../redux/authSlice";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
-const SignUp = () => {
+const Auth = () => {
   const [form, setForm] = useState({
     name: "",
     surname: "",
@@ -22,28 +23,73 @@ const SignUp = () => {
     password: "",
     rePassword: "",
   });
-  const [isSignup, setIsSignup] = useState(false);
+  const [isSignupForm, setIsSignupForm] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const classes = useStyles();
   const navigate = useNavigate();
+  const { isLoading, error, isLoggedIn, isSignup, user } = useSelector(
+    (state) => state.auth
+  );
 
-  const [showPassword, setShowPassword] = useState(false);
-  const handleShowPassword = () => setShowPassword(!showPassword);
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+      toast.success(`Hoşgeldin ${user.name}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    if (isSignup) {
+      setIsSignupForm(false);
+      clearForm();
+      setShowPassword(false);
+      toast.success("Kayıt işlemi başarılı", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    if (error) {
+      toast.error(error, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
+    dispatch(resetInitialState());
+  }, [isLoggedIn, error, navigate, user, isSignup, dispatch]);
 
   const switchMode = () => {
     clearForm();
-    setIsSignup(!isSignup);
+    setIsSignupForm(!isSignupForm);
     setShowPassword(false);
   };
+
+  const handleShowPassword = () => setShowPassword(!showPassword);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (isSignup) {
-      dispatch(register([form, setIsSignup, clearForm]));
+    if (isSignupForm) {
+      dispatch(register(form));
     } else {
       const loginForm = { email: form.email, password: form.password };
-      dispatch(login([loginForm, navigate]));
+      dispatch(login(loginForm));
     }
   };
 
@@ -67,11 +113,11 @@ const SignUp = () => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          {isSignup ? "Sign up" : "Sign in"}
+          {isSignupForm ? "Sign up" : "Sign in"}
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2}>
-            {isSignup && (
+            {isSignupForm && (
               <>
                 <Input
                   name="name"
@@ -105,7 +151,7 @@ const SignUp = () => {
               type={showPassword ? "text" : "password"}
               handleShowPassword={handleShowPassword}
             />
-            {isSignup && (
+            {isSignupForm && (
               <Input
                 name="rePassword"
                 value={form.rePassword}
@@ -122,13 +168,13 @@ const SignUp = () => {
             color="primary"
             className={classes.submit}
           >
-            {isSignup ? "Sign Up" : "Sign In"}
+            {isSignupForm ? "Sign Up" : "Sign In"}
           </Button>
 
           <Grid container justify="flex-end">
             <Grid item>
               <Button onClick={switchMode}>
-                {isSignup
+                {isSignupForm
                   ? "Already have an account? Sign in"
                   : "Don't have an account? Sign Up"}
               </Button>
@@ -140,4 +186,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Auth;

@@ -12,6 +12,7 @@ const Form = () => {
   const classes = useStyles();
 
   const { currentId, posts } = useSelector((state) => state.posts);
+  const { user } = useSelector((state) => state.auth);
 
   const [formInformations, setFormInformations] = useState({
     creator: "",
@@ -87,6 +88,16 @@ const Form = () => {
       postImage: "default.jpg",
     });
   };
+
+  if (!user) {
+    return (
+      <Paper className={classes.paper}>
+        <Typography variant="h6" align="center">
+          Please Sign In to create your own memories and like other's memories.
+        </Typography>
+      </Paper>
+    );
+  }
 
   return (
     <Paper className={classes.paper}>

@@ -42,10 +42,6 @@ const login = asyncHandler(async (req, res, next) => {
 
   return res.status(200).json({
     success: true,
-    data: {
-      name: user.name,
-      surname: user.surname,
-    },
     token,
   });
 });
