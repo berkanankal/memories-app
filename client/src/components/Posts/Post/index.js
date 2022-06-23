@@ -14,11 +14,12 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import useStyles from "./styles";
 import moment from "moment";
 import { deletePost, likePost, setCurrentId } from "../../../redux/postsSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Post = ({ post }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const { user } = useSelector((state) => state.auth);
 
   const handleDelete = (id) => {
     dispatch(deletePost(id));
@@ -32,6 +33,25 @@ const Post = ({ post }) => {
     dispatch(setCurrentId(id));
   };
 
+  const Likes = () => {
+    return post.likes.find((like) => like === user.id) ? (
+      <>
+        <ThumbUpAltIcon fontSize="small" />
+        &nbsp;
+        {post.likes.length > 2
+          ? `You and ${post.likes.length - 1} others`
+          : `${post.likes.length} like${post.likes.length > 1 ? "s" : ""}`}
+      </>
+    ) : (
+      <>
+        <ThumbUpAltOutlined fontSize="small" />
+        &nbsp;{post.likes.length} {post.likes.length === 1 ? "Like" : "Likes"}
+      </>
+    );
+  };
+
+  console.log(post);
+
   return (
     <Card className={classes.card} raised elevation={6}>
       <CardMedia
@@ -40,22 +60,27 @@ const Post = ({ post }) => {
         title={post.title}
       />
       <div className={classes.overlay}>
-        <Typography variant="h6">{post.creator}</Typography>
+        <Typography variant="h6">
+          {post.creator.name} {post.creator.surname}
+        </Typography>
         <Typography variant="body2">
           {moment(post.createdAt).fromNow()}
         </Typography>
       </div>
-      <div className={classes.overlay2} name="edit">
-        <Button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleSetCurrentId(post._id);
-          }}
-          style={{ color: "white" }}
-        >
-          <MoreHorizIcon  />
-        </Button>
-      </div>
+      {user && user.id === post.creator._id && (
+        <div className={classes.overlay2} name="edit">
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleSetCurrentId(post._id);
+            }}
+            style={{ color: "white" }}
+          >
+            <MoreHorizIcon />
+          </Button>
+        </div>
+      )}
+
       <div className={classes.details}>
         <Typography variant="body2" color="textSecondary" component="h2">
           {post.tags.map((tag) => `#${tag} `)}
@@ -80,16 +105,17 @@ const Post = ({ post }) => {
           color="primary"
           onClick={() => handleLike(post._id)}
         >
-          <ThumbUpAltOutlined fontSize="small" />
-          &nbsp;{post.likes.length} {post.likes.length === 1 ? "Like" : "Likes"}
+          <Likes />
         </Button>
-        <Button
-          size="small"
-          color="secondary"
-          onClick={() => handleDelete(post._id)}
-        >
-          <DeleteIcon fontSize="small" /> &nbsp; Delete
-        </Button>
+        {user && user.id === post.creator._id && (
+          <Button
+            size="small"
+            color="secondary"
+            onClick={() => handleDelete(post._id)}
+          >
+            <DeleteIcon fontSize="small" /> &nbsp; Delete
+          </Button>
+        )}
       </CardActions>
     </Card>
   );

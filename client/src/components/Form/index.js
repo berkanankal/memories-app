@@ -17,7 +17,6 @@ const Form = () => {
   const { user } = useSelector((state) => state.auth);
 
   const [formInformations, setFormInformations] = useState({
-    creator: "",
     title: "",
     message: "",
     tags: [],
@@ -44,7 +43,6 @@ const Form = () => {
     validationSchema: PostSchema,
     onSubmit: (values) => {
       const formData = new FormData();
-      formData.append("creator", values.creator);
       formData.append("title", values.title);
       formData.append("message", values.message);
       var array = values.tags;
@@ -112,14 +110,6 @@ const Form = () => {
         <Typography variant="h6">
           {currentId ? `Editing memory` : "Creating a Memory"}
         </Typography>
-        <TextField
-          name="creator"
-          variant="outlined"
-          label="Creator"
-          fullWidth
-          onChange={handleChange}
-          value={values.creator}
-        />
         <TextField
           name="title"
           variant="outlined"

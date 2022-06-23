@@ -10,16 +10,22 @@ const PostSchema = new Schema({
     type: String,
     required: [true, "Message is required"],
   },
-  creator: String,
+  creator: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: [true, "Creator is required"],
+  },
   tags: [String],
   postImage: {
     type: String,
     default: "default.jpg",
   },
-  likes: {
-    type: Number,
-    default: 0,
-  },
+  likes: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,

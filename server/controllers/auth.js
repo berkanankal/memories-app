@@ -46,4 +46,18 @@ const login = asyncHandler(async (req, res, next) => {
   });
 });
 
-module.exports = { register, login };
+const logout = (req, res, next) => {
+  res.status(200).json({
+    success: true,
+    data: "Logout successful",
+  });
+};
+
+const getLoggedInUser = (req, res, next) => {
+  return res.status(200).json({
+    success: true,
+    data: req.user,
+  });
+};
+
+module.exports = { register, login, logout, getLoggedInUser };
