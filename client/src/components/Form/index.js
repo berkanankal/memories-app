@@ -1,3 +1,5 @@
+// Tags inputunu chip inputa çevir
+
 import { useEffect, useState } from "react";
 import { TextField, Button, Typography, Paper } from "@mui/material";
 import { createPost, updatePost, setCurrentId } from "../../redux/postsSlice";
@@ -91,7 +93,7 @@ const Form = () => {
 
   if (!user) {
     return (
-      <Paper className={classes.paper}>
+      <Paper className={classes.paper} elevation={6}>
         <Typography variant="h6" align="center">
           Please Sign In to create your own memories and like other's memories.
         </Typography>
@@ -100,7 +102,7 @@ const Form = () => {
   }
 
   return (
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} elevation={6}>
       <form
         autoComplete="off"
         noValidate
@@ -154,7 +156,8 @@ const Form = () => {
           <input type="file" onChange={handlePhoto} />
         </div>
         <Button
-          sx={{ marginBottom: 1 }}
+          className={classes.buttonSubmit}
+          // sx={{ marginBottom: 1 }}
           variant="contained"
           color="primary"
           type="submit"

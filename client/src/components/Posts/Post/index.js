@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
+import ThumbUpAltOutlined from "@mui/icons-material/ThumbUpAlt";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import useStyles from "./styles";
@@ -32,11 +33,11 @@ const Post = ({ post }) => {
   };
 
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} raised elevation={6}>
       <CardMedia
         className={classes.media}
         image={`http://localhost:5004/uploads/${post.postImage}`}
-        title="deneme"
+        title={post.title}
       />
       <div className={classes.overlay}>
         <Typography variant="h6">{post.creator}</Typography>
@@ -44,13 +45,15 @@ const Post = ({ post }) => {
           {moment(post.createdAt).fromNow()}
         </Typography>
       </div>
-      <div className={classes.overlay2}>
+      <div className={classes.overlay2} name="edit">
         <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleSetCurrentId(post._id);
+          }}
           style={{ color: "white" }}
-          size="small"
-          onClick={() => handleSetCurrentId(post._id)}
         >
-          <MoreHorizIcon />
+          <MoreHorizIcon  />
         </Button>
       </div>
       <div className={classes.details}>
@@ -68,7 +71,7 @@ const Post = ({ post }) => {
       </Typography>
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          {post.message}
+          {post.message.split(" ").splice(0, 20).join(" ")}...
         </Typography>
       </CardContent>
       <CardActions className={classes.cardActions}>
@@ -77,14 +80,15 @@ const Post = ({ post }) => {
           color="primary"
           onClick={() => handleLike(post._id)}
         >
-          <ThumbUpAltIcon fontSize="small" /> Like {post.likes}
+          <ThumbUpAltOutlined fontSize="small" />
+          &nbsp;{post.likes.length} {post.likes.length === 1 ? "Like" : "Likes"}
         </Button>
         <Button
           size="small"
-          color="primary"
+          color="secondary"
           onClick={() => handleDelete(post._id)}
         >
-          <DeleteIcon fontSize="small" /> Delete
+          <DeleteIcon fontSize="small" /> &nbsp; Delete
         </Button>
       </CardActions>
     </Card>

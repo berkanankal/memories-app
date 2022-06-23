@@ -3,7 +3,7 @@
 /server/public
 
 # Client
-/client/src/images
+# /client/src/images
 
 # Logs
 logs
