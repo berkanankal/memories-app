@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
-import ThumbUpAltOutlined from "@mui/icons-material/ThumbUpAlt";
+import ThumbUpAltOutlined from "@mui/icons-material/ThumbUpAltOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import useStyles from "./styles";
@@ -34,23 +34,24 @@ const Post = ({ post }) => {
   };
 
   const Likes = () => {
-    return post.likes.find((like) => like === user.id) ? (
+    return post.likes.includes(user.id) ? (
       <>
         <ThumbUpAltIcon fontSize="small" />
         &nbsp;
         {post.likes.length > 2
           ? `You and ${post.likes.length - 1} others`
-          : `${post.likes.length} like${post.likes.length > 1 ? "s" : ""}`}
+          : `${post.likes.length} ${
+              post.likes.length === 1 ? "Like" : "Likes"
+            }`}
       </>
     ) : (
       <>
         <ThumbUpAltOutlined fontSize="small" />
-        &nbsp;{post.likes.length} {post.likes.length === 1 ? "Like" : "Likes"}
+        &nbsp;{post.likes.length > 0 && post.likes.length}{" "}
+        {post.likes.length <= 1 ? "Like" : "Likes"}
       </>
     );
   };
-
-  console.log(post);
 
   return (
     <Card className={classes.card} raised elevation={6}>
@@ -100,13 +101,21 @@ const Post = ({ post }) => {
         </Typography>
       </CardContent>
       <CardActions className={classes.cardActions}>
-        <Button
-          size="small"
-          color="primary"
-          onClick={() => handleLike(post._id)}
-        >
-          <Likes />
-        </Button>
+        {user ? (
+          <Button
+            size="small"
+            color="primary"
+            onClick={() => handleLike(post._id)}
+          >
+            <Likes />
+          </Button>
+        ) : (
+          <Button size="small" color="primary" disabled>
+            <ThumbUpAltOutlined fontSize="small" />
+            &nbsp;{post.likes.length > 0 && post.likes.length}{" "}
+            {post.likes.length <= 1 ? "Like" : "Likes"}
+          </Button>
+        )}
         {user && user.id === post.creator._id && (
           <Button
             size="small"

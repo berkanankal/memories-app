@@ -19,7 +19,9 @@ const createPost = asyncHandler(async (req, res) => {
 
   information.creator = req.user.id;
 
-  const post = await Post.create(information);
+  let post = await Post.create(information);
+
+  post = await post.populate("creator", "name surname");
 
   return res.status(201).json({
     success: true,
@@ -49,7 +51,7 @@ const updatePost = asyncHandler(async (req, res) => {
   const post = await Post.findByIdAndUpdate(id, information, {
     new: true,
     runValidators: true,
-  });
+  }).populate("creator", "name surname");
 
   return res.status(200).json({
     success: true,
@@ -61,7 +63,7 @@ const likePost = asyncHandler(async (req, res) => {
   const postId = req.params.id;
   const userId = req.user.id;
 
-  const post = await Post.findById(postId);
+  const post = await Post.findById(postId).populate("creator", "name surname");
 
   if (post.likes.includes(userId)) {
     post.likes = post.likes.filter((like) => like != userId);

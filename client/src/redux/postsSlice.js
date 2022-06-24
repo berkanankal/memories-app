@@ -7,35 +7,85 @@ export const fetchPosts = createAsyncThunk("posts/fetchPosts", () => {
 
 export const createPost = createAsyncThunk(
   "posts/createPost",
-  (formInformations) => {
+  (formInformations, thunkAPI) => {
     return axios
-      .post("http://localhost:5004/api/posts", formInformations)
+      .post("http://localhost:5004/api/posts", formInformations, {
+        headers: {
+          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("user"))}`,
+        },
+      })
       .then((res) => res.data)
-      .catch((err) => err.response.data);
+      .catch((err) => {
+        if (!err.response) {
+          throw err;
+        }
+
+        return thunkAPI.rejectWithValue(err.response.data);
+      });
   }
 );
 
-export const deletePost = createAsyncThunk("posts/deletePost", (id) => {
-  return axios
-    .delete(`http://localhost:5004/api/posts/${id}`)
-    .then(() => id)
-    .catch((err) => err.response.data);
-});
+export const deletePost = createAsyncThunk(
+  "posts/deletePost",
+  (id, thunkAPI) => {
+    return axios
+      .delete(`http://localhost:5004/api/posts/${id}`, {
+        headers: {
+          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("user"))}`,
+        },
+      })
+      .then(() => id)
+      .catch((err) => {
+        if (!err.response) {
+          throw err;
+        }
 
-export const likePost = createAsyncThunk("posts/likePost", (id) => {
-  return axios
-    .put(`http://localhost:5004/api/posts/${id}/like`)
-    .then(() => id)
-    .catch((err) => err.response.data);
-});
+        return thunkAPI.rejectWithValue(err.response.data);
+      });
+  }
+);
 
-export const updatePost = createAsyncThunk("posts/updatePost", (post) => {
-  const id = post.get("_id");
+export const likePost = createAsyncThunk("posts/likePost", (id, thunkAPI) => {
   return axios
-    .put(`http://localhost:5004/api/posts/${id}`, post)
+    .put(
+      `http://localhost:5004/api/posts/${id}/like`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("user"))}`,
+        },
+      }
+    )
     .then((res) => res.data)
-    .catch((err) => err.response.data);
+    .catch((err) => {
+      if (!err.response) {
+        throw err;
+      }
+
+      return thunkAPI.rejectWithValue(err.response.data);
+    });
 });
+
+export const updatePost = createAsyncThunk(
+  "posts/updatePost",
+  (post, thunkAPI) => {
+    const id = post.get("_id");
+    return axios
+      .put(`http://localhost:5004/api/posts/${id}`, post, {
+        headers: {
+          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("user"))}`,
+        },
+      })
+      .then((res) => res.data)
+      .catch((err) => {
+        if (!err.response) {
+          throw err;
+        }
+
+        return thunkAPI.rejectWithValue(err.response.data);
+      });
+  }
+);
 
 export const postsSlice = createSlice({
   name: "posts",
@@ -52,20 +102,45 @@ export const postsSlice = createSlice({
     [fetchPosts.fulfilled]: (state, action) => {
       state.posts = action.payload.data;
     },
+    [createPost.pending]: (state, action) => {
+      console.log("pending");
+    },
     [createPost.fulfilled]: (state, action) => {
       state.posts.push(action.payload.data);
+    },
+    [createPost.rejected]: (state, action) => {
+      console.log(action.payload);
+    },
+    [deletePost.pending]: (state, action) => {
+      console.log("pending");
     },
     [deletePost.fulfilled]: (state, action) => {
       state.posts = state.posts.filter((post) => post._id !== action.payload);
     },
+    [deletePost.rejected]: (state, action) => {
+      console.log(action.payload);
+    },
+    [likePost.pending]: (state, action) => {
+      console.log("pending");
+    },
     [likePost.fulfilled]: (state, action) => {
-      const post = state.posts.find((post) => post._id === action.payload);
-      post.likes++;
+      state.posts = state.posts.map((post) =>
+        post._id === action.payload.data._id ? action.payload.data : post
+      );
+    },
+    [likePost.rejected]: (state, action) => {
+      console.log(action.payload);
+    },
+    [updatePost.pending]: (state, action) => {
+      console.log("pending");
     },
     [updatePost.fulfilled]: (state, action) => {
       state.posts = state.posts.map((post) =>
         post._id === action.payload.data._id ? action.payload.data : post
       );
+    },
+    [updatePost.rejected]: (state, action) => {
+      console.log(action.payload);
     },
   },
 });
