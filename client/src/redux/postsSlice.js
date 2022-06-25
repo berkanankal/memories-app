@@ -11,7 +11,7 @@ export const createPost = createAsyncThunk(
     return axios
       .post("http://localhost:5004/api/posts", formInformations, {
         headers: {
-          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("user"))}`,
+          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("token"))}`,
         },
       })
       .then((res) => res.data)
@@ -31,7 +31,7 @@ export const deletePost = createAsyncThunk(
     return axios
       .delete(`http://localhost:5004/api/posts/${id}`, {
         headers: {
-          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("user"))}`,
+          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("token"))}`,
         },
       })
       .then(() => id)
@@ -52,7 +52,7 @@ export const likePost = createAsyncThunk("posts/likePost", (id, thunkAPI) => {
       {},
       {
         headers: {
-          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("user"))}`,
+          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("token"))}`,
         },
       }
     )
@@ -73,7 +73,7 @@ export const updatePost = createAsyncThunk(
     return axios
       .put(`http://localhost:5004/api/posts/${id}`, post, {
         headers: {
-          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("user"))}`,
+          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("token"))}`,
         },
       })
       .then((res) => res.data)
@@ -92,10 +92,14 @@ export const postsSlice = createSlice({
   initialState: {
     posts: [],
     currentId: null,
+    error: null,
   },
   reducers: {
     setCurrentId: (state, action) => {
       state.currentId = action.payload;
+    },
+    resetErrorMessage: (state) => {
+      state.error = null;
     },
   },
   extraReducers: {
@@ -109,7 +113,7 @@ export const postsSlice = createSlice({
       state.posts.push(action.payload.data);
     },
     [createPost.rejected]: (state, action) => {
-      console.log(action.payload);
+      state.error = action.payload.message;
     },
     [deletePost.pending]: (state, action) => {
       console.log("pending");
@@ -118,7 +122,7 @@ export const postsSlice = createSlice({
       state.posts = state.posts.filter((post) => post._id !== action.payload);
     },
     [deletePost.rejected]: (state, action) => {
-      console.log(action.payload);
+      state.error = action.payload.message;
     },
     [likePost.pending]: (state, action) => {
       console.log("pending");
@@ -129,7 +133,7 @@ export const postsSlice = createSlice({
       );
     },
     [likePost.rejected]: (state, action) => {
-      console.log(action.payload);
+      state.error = action.payload.message;
     },
     [updatePost.pending]: (state, action) => {
       console.log("pending");
@@ -140,11 +144,11 @@ export const postsSlice = createSlice({
       );
     },
     [updatePost.rejected]: (state, action) => {
-      console.log(action.payload);
+      state.error = action.payload.message;
     },
   },
 });
 
-export const { setCurrentId } = postsSlice.actions;
+export const { setCurrentId, resetErrorMessage } = postsSlice.actions;
 
 export default postsSlice.reducer;

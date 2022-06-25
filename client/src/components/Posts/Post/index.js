@@ -34,7 +34,7 @@ const Post = ({ post }) => {
   };
 
   const Likes = () => {
-    return post.likes.includes(user.id) ? (
+    return post.likes.includes(user._id) ? (
       <>
         <ThumbUpAltIcon fontSize="small" />
         &nbsp;
@@ -68,7 +68,7 @@ const Post = ({ post }) => {
           {moment(post.createdAt).fromNow()}
         </Typography>
       </div>
-      {user && user.id === post.creator._id && (
+      {user && user._id === post.creator._id && (
         <div className={classes.overlay2} name="edit">
           <Button
             onClick={(e) => {
@@ -116,7 +116,7 @@ const Post = ({ post }) => {
             {post.likes.length <= 1 ? "Like" : "Likes"}
           </Button>
         )}
-        {user && user.id === post.creator._id && (
+        {user && user._id === post.creator._id && (
           <Button
             size="small"
             color="secondary"

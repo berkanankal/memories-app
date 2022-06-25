@@ -42,14 +42,23 @@ const login = asyncHandler(async (req, res, next) => {
 
   return res.status(200).json({
     success: true,
-    token,
+    data: {
+      user: {
+        _id: user._id,
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+        role: user.role,
+      },
+      token,
+    },
   });
 });
 
 const logout = (req, res, next) => {
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
-    data: "Logout successful",
+    message: "Logout successful",
   });
 };
 

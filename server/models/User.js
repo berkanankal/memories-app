@@ -61,7 +61,7 @@ UserSchema.methods.getUserTokenFromModel = function () {
   const { JWT_SECRET_KEY, JWT_EXPIRE } = process.env;
 
   const payload = {
-    id: this._id,
+    _id: this._id,
     name: this.name,
     surname: this.surname,
     email: this.email,

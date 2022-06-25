@@ -18,7 +18,10 @@ const getAccessToRoute = (req, res, next) => {
   jwt.verify(token, JWT_SECRET_KEY, function (err, decoded) {
     if (err) {
       return next(
-        new CustomError("You are not authorized to access this page", 401)
+        new CustomError(
+          "Your authorization has expired, you need to login again",
+          401
+        )
       );
     }
 
@@ -29,7 +32,7 @@ const getAccessToRoute = (req, res, next) => {
 };
 
 const getPostOwnerAccess = async (req, res, next) => {
-  const userId = req.user.id;
+  const userId = req.user._id;
   const postId = req.params.id;
 
   const post = await Post.findById(postId);

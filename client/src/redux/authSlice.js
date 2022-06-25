@@ -26,9 +26,8 @@ export const login = createAsyncThunk(
     return axios
       .post("http://localhost:5004/api/auth/login", formInformations)
       .then((res) => {
-        localStorage.setItem("user", JSON.stringify(res.data.token));
-        const user = decode(res.data.token);
-        return user;
+        localStorage.setItem("token", JSON.stringify(res.data.data.token));
+        return res.data;
       })
       .catch((err) => {
         if (!err.response) {
@@ -40,19 +39,58 @@ export const login = createAsyncThunk(
   }
 );
 
-export const logout = createAsyncThunk("auth/logout", () => {
-  localStorage.removeItem("user");
+export const logout = createAsyncThunk("auth/logout", (arg, thunkAPI) => {
+  return axios
+    .get("http://localhost:5004/api/auth/logout", {
+      headers: {
+        Authorization: `Bearer: ${JSON.parse(localStorage.getItem("token"))}`,
+      },
+    })
+    .then((res) => {
+      localStorage.removeItem("token");
+      return res.data;
+    })
+    .catch((err) => {
+      if (!err.response) {
+        throw err;
+      }
+
+      return thunkAPI.rejectWithValue(err.response.data);
+    });
 });
 
+export const getLoggedInUser = createAsyncThunk(
+  "auth/getLoggedInUser",
+  (arg, thunkAPI) => {
+    return axios
+      .get("http://localhost:5004/api/auth/user", {
+        headers: {
+          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("token"))}`,
+        },
+      })
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (!err.response) {
+          throw err;
+        }
+        localStorage.removeItem("token");
+
+        return thunkAPI.rejectWithValue(err.response.data);
+      });
+  }
+);
+
 let user = null;
-const token = localStorage.getItem("user");
+const token = localStorage.getItem("token");
 
 if (token) {
   const decodedToken = decode(token);
   if (!(decodedToken.exp * 1000 < new Date().getTime())) {
     user = decodedToken;
   } else {
-    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   }
 }
 
@@ -64,6 +102,7 @@ export const authSlice = createSlice({
     isLoading: false,
     isLoggedIn: false,
     error: null,
+    logoutError: null,
   },
   reducers: {
     resetInitialState: (state) => {
@@ -82,7 +121,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.isLoggedIn = true;
       state.error = null;
-      state.user = action.payload;
+      state.user = action.payload.data.user;
     },
     [login.rejected]: (state, action) => {
       state.isLoading = false;
@@ -102,8 +141,20 @@ export const authSlice = createSlice({
       state.error = action.payload.message;
     },
     // LOGOUT
-    [logout.fulfilled]: (state) => {
+    [logout.pending]: (state) => {
+      console.log("pending");
+    },
+    [logout.fulfilled]: (state, action) => {
       state.isLoggedIn = false;
+      state.user = null;
+    },
+    [logout.rejected]: (state, action) => {
+      state.logoutError = action.payload.message;
+    },
+    // Get Logged In User
+    [getLoggedInUser.pending]: (state) => {},
+    [getLoggedInUser.fulfilled]: (state, action) => {},
+    [getLoggedInUser.rejected]: (state, action) => {
       state.user = null;
     },
   },

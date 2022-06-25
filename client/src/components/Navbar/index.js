@@ -17,7 +17,7 @@ const Navbar = () => {
     dispatch(logout());
   };
 
-  const { user } = useSelector((state) => state.auth);
+  const { user, isLoading } = useSelector((state) => state.auth);
 
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">

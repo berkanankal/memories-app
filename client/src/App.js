@@ -1,16 +1,38 @@
-import React from "react";
+import { useEffect } from "react";
 import { Container } from "@mui/material";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import Auth from "./components/Auth";
 import PostDetails from "./components/PostDetails";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { getLoggedInUser } from "./redux/authSlice";
+import { resetErrorMessage } from "./redux/postsSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const App = () => {
+  const dispatch = useDispatch();
+  const { posts, error } = useSelector((state) => state.posts);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      dispatch(getLoggedInUser());
+      dispatch(resetErrorMessage());
+    }
+  }, [dispatch, posts, error]);
+
   return (
     <Container maxWidth="lg">
       <ToastContainer />

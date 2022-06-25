@@ -17,7 +17,7 @@ const createPost = asyncHandler(async (req, res) => {
     information.postImage = req.savedImage;
   }
 
-  information.creator = req.user.id;
+  information.creator = req.user._id;
 
   let post = await Post.create(information);
 
@@ -61,7 +61,7 @@ const updatePost = asyncHandler(async (req, res) => {
 
 const likePost = asyncHandler(async (req, res) => {
   const postId = req.params.id;
-  const userId = req.user.id;
+  const userId = req.user._id;
 
   const post = await Post.findById(postId).populate("creator", "name surname");
 
