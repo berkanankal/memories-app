@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import decode from "jwt-decode";
+import * as API from "./api/auth";
 
 export const register = createAsyncThunk(
   "auth/register",
   (formInformations, thunkAPI) => {
-    return axios
-      .post("http://localhost:5004/api/auth/register", formInformations)
+    return API.register(formInformations)
       .then((res) => {
         return res.data;
       })
@@ -23,8 +22,7 @@ export const register = createAsyncThunk(
 export const login = createAsyncThunk(
   "auth/login",
   (formInformations, thunkAPI) => {
-    return axios
-      .post("http://localhost:5004/api/auth/login", formInformations)
+    return API.login(formInformations)
       .then((res) => {
         localStorage.setItem("token", JSON.stringify(res.data.data.token));
         return res.data;
@@ -40,12 +38,7 @@ export const login = createAsyncThunk(
 );
 
 export const logout = createAsyncThunk("auth/logout", (arg, thunkAPI) => {
-  return axios
-    .get("http://localhost:5004/api/auth/logout", {
-      headers: {
-        Authorization: `Bearer: ${JSON.parse(localStorage.getItem("token"))}`,
-      },
-    })
+  return API.logout()
     .then((res) => {
       localStorage.removeItem("token");
       return res.data;
@@ -62,12 +55,7 @@ export const logout = createAsyncThunk("auth/logout", (arg, thunkAPI) => {
 export const getLoggedInUser = createAsyncThunk(
   "auth/getLoggedInUser",
   (arg, thunkAPI) => {
-    return axios
-      .get("http://localhost:5004/api/auth/user", {
-        headers: {
-          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("token"))}`,
-        },
-      })
+    return API.getLoggedInUser()
       .then((res) => {
         return res.data;
       })

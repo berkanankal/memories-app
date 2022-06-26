@@ -1,19 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+
+import * as API from "./api/posts";
 
 export const fetchPosts = createAsyncThunk("posts/fetchPosts", () => {
-  return axios.get("http://localhost:5004/api/posts").then((res) => res.data);
+  return API.fetchPosts().then((res) => res.data);
 });
 
 export const createPost = createAsyncThunk(
   "posts/createPost",
   (formInformations, thunkAPI) => {
-    return axios
-      .post("http://localhost:5004/api/posts", formInformations, {
-        headers: {
-          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("token"))}`,
-        },
-      })
+    return API.createPost(formInformations)
       .then((res) => res.data)
       .catch((err) => {
         if (!err.response) {
@@ -28,12 +24,7 @@ export const createPost = createAsyncThunk(
 export const deletePost = createAsyncThunk(
   "posts/deletePost",
   (id, thunkAPI) => {
-    return axios
-      .delete(`http://localhost:5004/api/posts/${id}`, {
-        headers: {
-          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("token"))}`,
-        },
-      })
+    return API.deletePost(id)
       .then(() => id)
       .catch((err) => {
         if (!err.response) {
@@ -46,16 +37,7 @@ export const deletePost = createAsyncThunk(
 );
 
 export const likePost = createAsyncThunk("posts/likePost", (id, thunkAPI) => {
-  return axios
-    .put(
-      `http://localhost:5004/api/posts/${id}/like`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("token"))}`,
-        },
-      }
-    )
+  return API.likePost(id)
     .then((res) => res.data)
     .catch((err) => {
       if (!err.response) {
@@ -70,12 +52,7 @@ export const updatePost = createAsyncThunk(
   "posts/updatePost",
   (post, thunkAPI) => {
     const id = post.get("_id");
-    return axios
-      .put(`http://localhost:5004/api/posts/${id}`, post, {
-        headers: {
-          Authorization: `Bearer: ${JSON.parse(localStorage.getItem("token"))}`,
-        },
-      })
+    return API.updatePost(id, post)
       .then((res) => res.data)
       .catch((err) => {
         if (!err.response) {
