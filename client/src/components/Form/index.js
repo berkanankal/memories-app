@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { TextField, Button, Typography, Paper } from "@mui/material";
-import { createPost, updatePost, setCurrentId } from "../../redux/postsSlice";
+import {
+  fetchPosts,
+  createPost,
+  updatePost,
+  setCurrentId,
+} from "../../redux/postsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";

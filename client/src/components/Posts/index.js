@@ -3,17 +3,35 @@ import { Grid } from "@mui/material";
 import Post from "./Post";
 import useStyles from "./styles";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchPosts } from "../../redux/postsSlice";
+import { fetchPosts, setPage } from "../../redux/postsSlice";
+import { useSearchParams } from "react-router-dom";
 
 const Posts = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const { posts } = useSelector((state) => state.posts);
+  const { posts, page, totalPosts, numberOfPages, limit } = useSelector(
+    (state) => state.posts
+  );
 
   useEffect(() => {
-    dispatch(fetchPosts());
-  }, [dispatch]);
+    dispatch(setPage(Number(searchParams.get("page") || 1)));
+    dispatch(fetchPosts(searchParams.get("page") || 1));
+  }, [dispatch, searchParams]);
+
+  // useEffect(() => {
+  //   console.log(totalPosts);
+  //   console.log((numberOfPages - 1) * limit);
+  //   console.log(page);
+  //   if (totalPosts === (numberOfPages - 1) * limit) {
+  //     setSearchParams({ page: page - 1 });
+  //   }
+  // }, [numberOfPages, limit, page, totalPosts, setSearchParams]);
+
+  useEffect(() => {
+    setSearchParams({ page: page });
+  }, [page, setSearchParams]);
 
   return (
     <Grid

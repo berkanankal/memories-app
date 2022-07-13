@@ -55,10 +55,11 @@ const Home = () => {
                 Search
               </Button>
             </AppBar>
+
             <Form />
 
             <Paper className={classes.pagination} elevation={6}>
-              <Pagination page={1} />
+              <Pagination />
             </Paper>
           </Grid>
         </Grid>

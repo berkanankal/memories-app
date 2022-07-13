@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   CardActions,
@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 const Post = ({ post }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
+
   const { user } = useSelector((state) => state.auth);
 
   const handleDelete = (id) => {

@@ -15,8 +15,6 @@ app.use("/api", routes);
 app.use(customErrorHandler);
 app.use("/api", express.static(path.join(__dirname, "public")));
 
-console.log(__dirname);
-
 app.get("/", (req, res) => {
   return res.send("App is running");
 });

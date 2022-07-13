@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Container } from "@mui/material";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -39,7 +39,8 @@ const App = () => {
       <BrowserRouter>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Navigate to="/posts" />} />
+          <Route path="/posts" element={<Home />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/posts/:id" element={<PostDetails />} />
         </Routes>
