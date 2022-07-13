@@ -56,6 +56,7 @@ const Navbar = () => {
           </div>
         ) : (
           <Button
+            className={classes.loginBtn}
             component={Link}
             to="/auth"
             variant="contained"
