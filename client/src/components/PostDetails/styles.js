@@ -5,12 +5,12 @@ export default makeStyles((theme) => ({
     borderRadius: "20px",
     objectFit: "cover",
     width: "100%",
-    maxHeight: "600px",
+    maxHeight: "350px",
   },
   card: {
     display: "flex",
     width: "100%",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("md")]: {
       flexWrap: "wrap",
       flexDirection: "column",
     },

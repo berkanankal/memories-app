@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
   Card,
   CardActions,
@@ -6,6 +6,7 @@ import {
   CardMedia,
   Button,
   Typography,
+  ButtonBase,
 } from "@mui/material";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import ThumbUpAltOutlined from "@mui/icons-material/ThumbUpAltOutlined";
@@ -15,10 +16,12 @@ import useStyles from "./styles";
 import moment from "moment";
 import { deletePost, likePost, setCurrentId } from "../../../redux/postsSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Post = ({ post }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.auth);
 
@@ -32,6 +35,10 @@ const Post = ({ post }) => {
 
   const handleSetCurrentId = (id) => {
     dispatch(setCurrentId(id));
+  };
+
+  const openPostDetails = (id) => {
+    navigate(`/posts/${id}`);
   };
 
   const Likes = () => {
@@ -56,51 +63,58 @@ const Post = ({ post }) => {
 
   return (
     <Card className={classes.card} raised elevation={6}>
-      <CardMedia
-        className={classes.media}
-        image={`${process.env.REACT_APP_BASE_URL}/uploads/${post.postImage}`}
-        title={post.title}
-      />
-      <div className={classes.overlay}>
-        <Typography variant="h6">
-          {post.creator.name} {post.creator.surname}
-        </Typography>
-        <Typography variant="body2">
-          {moment(post.createdAt).fromNow()}
-        </Typography>
-      </div>
-      {user && user._id === post.creator._id && (
-        <div className={classes.overlay2} name="edit">
-          <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleSetCurrentId(post._id);
-            }}
-            style={{ color: "white" }}
-          >
-            <MoreHorizIcon />
-          </Button>
-        </div>
-      )}
-
-      <div className={classes.details}>
-        <Typography variant="body2" color="textSecondary" component="h2">
-          {post.tags.map((tag) => `#${tag} `)}
-        </Typography>
-      </div>
-      <Typography
-        className={classes.title}
-        gutterBottom
-        variant="h5"
-        component="h2"
+      <ButtonBase
+        component="span"
+        name="test"
+        className={classes.cardAction}
+        onClick={() => openPostDetails(post._id)}
       >
-        {post.title}
-      </Typography>
-      <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {post.message.split(" ").splice(0, 20).join(" ")}...
+        <CardMedia
+          className={classes.media}
+          image={`${process.env.REACT_APP_BASE_URL}/uploads/${post.postImage}`}
+          title={post.title}
+        />
+        <div className={classes.overlay}>
+          <Typography variant="h6">
+            {post.creator.name} {post.creator.surname}
+          </Typography>
+          <Typography variant="body2">
+            {moment(post.createdAt).fromNow()}
+          </Typography>
+        </div>
+        {user && user._id === post.creator._id && (
+          <div className={classes.overlay2} name="edit">
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleSetCurrentId(post._id);
+              }}
+              style={{ color: "white" }}
+            >
+              <MoreHorizIcon />
+            </Button>
+          </div>
+        )}
+
+        <div className={classes.details}>
+          <Typography variant="body2" color="textSecondary" component="h2">
+            {post.tags.map((tag) => `#${tag} `)}
+          </Typography>
+        </div>
+        <Typography
+          className={classes.title}
+          gutterBottom
+          variant="h5"
+          component="h2"
+        >
+          {post.title}
         </Typography>
-      </CardContent>
+        <CardContent>
+          <Typography variant="body2" color="textSecondary" component="p">
+            {post.message.split(" ").splice(0, 20).join(" ")}...
+          </Typography>
+        </CardContent>
+      </ButtonBase>
       <CardActions className={classes.cardActions}>
         {user ? (
           <Button

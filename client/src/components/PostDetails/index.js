@@ -1,57 +1,86 @@
-import React from "react";
+import { useEffect } from "react";
 import { Paper, Typography, CircularProgress, Divider } from "@mui/material";
 import moment from "moment";
+import { useParams, Link } from "react-router-dom";
+import { fetchPostById } from "../../redux/postsSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 import useStyles from "./styles";
 
-const Post = () => {
+const PostDetails = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const { id } = useParams();
+
+  const { data, status } = useSelector((state) => state.posts.post);
+
+  useEffect(() => {
+    dispatch(fetchPostById(id));
+  }, [dispatch, id]);
+
+  console.log(data);
+
+  if (status === "loading") {
+    return (
+      <Paper elevation={6} className={classes.loadingPaper}>
+        <CircularProgress size="7em" />
+      </Paper>
+    );
+  }
 
   return (
-    <Paper style={{ padding: "20px", borderRadius: "15px" }} elevation={6}>
-      <div className={classes.card}>
-        <div className={classes.section}>
-          <Typography variant="h3" component="h2">
-            deneme
-          </Typography>
-          <Typography
-            gutterBottom
-            variant="h6"
-            color="textSecondary"
-            component="h2"
-          >
-            deneme
-          </Typography>
-          <Typography gutterBottom variant="body1" component="p">
-            deneme
-          </Typography>
-          <Typography variant="h6">Created by: deneme</Typography>
-          <Typography variant="body1">
-            {/* {moment(post.createdAt).fromNow()} */}
-            deneme
-          </Typography>
-          <Divider style={{ margin: "20px 0" }} />
-          <Typography variant="body1">
-            <strong>Realtime Chat - coming soon!</strong>
-          </Typography>
-          <Divider style={{ margin: "20px 0" }} />
-          <Typography variant="body1">
+    status === "succeeded" && (
+      <Paper style={{ padding: "20px", borderRadius: "15px" }} elevation={6}>
+        <div className={classes.card}>
+          <div className={classes.section}>
+            <Typography variant="h3" component="h2">
+              {data.title}
+            </Typography>
+            <Typography
+              gutterBottom
+              variant="h6"
+              color="textSecondary"
+              component="h2"
+            >
+              {data.tags.map((tag) => (
+                <span key={tag}>#{tag} </span>
+              ))}
+            </Typography>
+            <Typography gutterBottom variant="body1" component="p">
+              {data.message}
+            </Typography>
+            <Typography variant="h6">
+              Created by: {data.creator.name} {data.creator.surname}
+              {/* <Link
+                to={`/creators/${data.name}`}
+                style={{ textDecoration: "none", color: "#3f51b5" }}
+              >
+                {` ${data.name}`}
+              </Link> */}
+            </Typography>
+            <Typography variant="body1">
+              {moment(data.createdAt).fromNow()}
+            </Typography>
+            <Divider style={{ margin: "20px 0" }} />
+            <Typography variant="body1">
+              <strong>Realtime Chat - coming soon!</strong>
+            </Typography>
+            <Divider style={{ margin: "20px 0" }} />
             <strong>Comments - coming soon!</strong>
-          </Typography>
-          <Divider style={{ margin: "20px 0" }} />
+            <Divider style={{ margin: "20px 0" }} />
+          </div>
+          <div className={classes.imageSection}>
+            <img
+              className={classes.media}
+              src={`${process.env.REACT_APP_BASE_URL}/uploads/${data.postImage}`}
+              // alt={post.title}
+              alt={"deneme"}
+            />
+          </div>
         </div>
-        <div className={classes.imageSection}>
-          <img
-            className={classes.media}
-            src={
-              "https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png"
-            }
-            alt="deneme"
-          />
-        </div>
-      </div>
-    </Paper>
+      </Paper>
+    )
   );
 };
 
-export default Post;
+export default PostDetails;

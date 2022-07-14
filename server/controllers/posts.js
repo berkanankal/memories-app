@@ -6,7 +6,7 @@ const getAllPosts = asyncHandler(async (req, res) => {
 
   // Pagination
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 5;
+  const limit = parseInt(req.query.limit) || 6;
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
   const total = await Post.countDocuments();
@@ -34,6 +34,18 @@ const getAllPosts = asyncHandler(async (req, res) => {
     numberOfPages: pages,
     limit,
     data: posts,
+  });
+});
+
+const getPostById = asyncHandler(async (req, res) => {
+  const post = await Post.findById(req.params.id).populate(
+    "creator",
+    "name surname"
+  );
+
+  return res.status(200).json({
+    success: true,
+    data: post,
   });
 });
 
@@ -112,4 +124,5 @@ module.exports = {
   deletePost,
   updatePost,
   likePost,
+  getPostById,
 };

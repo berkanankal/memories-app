@@ -2,6 +2,8 @@ import API from "./index";
 
 export const fetchPosts = (page) => API.get(`/posts?page=${page}`);
 
+export const fetchPostById = (id) => API.get(`/posts/${id}`);
+
 export const createPost = (formInformations) => {
   return API.post("/posts", formInformations, {
     headers: {

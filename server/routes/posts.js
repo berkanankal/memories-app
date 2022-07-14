@@ -6,6 +6,7 @@ const {
   deletePost,
   updatePost,
   likePost,
+  getPostById,
 } = require("../controllers/posts");
 const upload = require("../helpers/libraries/multer");
 const {
@@ -17,6 +18,7 @@ const {
 } = require("../middlewares/database/databaseErrorHelpers");
 
 router.get("/", getAllPosts);
+router.get("/:id", checkPostExist, getPostById);
 router.post("/", [getAccessToRoute, upload.single("postImage")], createPost);
 router.delete(
   "/:id",

@@ -6,6 +6,10 @@ export const fetchPosts = createAsyncThunk("posts/fetchPosts", (page) => {
   return API.fetchPosts(page).then((res) => res.data);
 });
 
+export const fetchPostById = createAsyncThunk("posts/fetchPostById", (id) => {
+  return API.fetchPostById(id).then((res) => res.data);
+});
+
 export const createPost = createAsyncThunk(
   "posts/createPost",
   (formInformations, thunkAPI) => {
@@ -68,13 +72,17 @@ export const postsSlice = createSlice({
   name: "posts",
   initialState: {
     posts: [],
+    post: {
+      data: {},
+      status: "idle",
+      error: null,
+    },
     numberOfPages: 0,
     page: 1,
     totalPosts: 0,
     limit: 0,
     currentId: null,
     error: null,
-    goToPreviousPage: false,
   },
   reducers: {
     setCurrentId: (state, action) => {
@@ -93,6 +101,17 @@ export const postsSlice = createSlice({
       state.numberOfPages = action.payload.numberOfPages;
       state.totalPosts = action.payload.totalPosts;
       state.limit = action.payload.limit;
+    },
+    [fetchPostById.pending]: (state, action) => {
+      state.post.status = "loading";
+    },
+    [fetchPostById.fulfilled]: (state, action) => {
+      state.post.data = action.payload.data;
+      state.post.status = "succeeded";
+    },
+    [fetchPostById.rejected]: (state, action) => {
+      state.status = "failed";
+      state.post.error = action.payload;
     },
     [createPost.pending]: (state, action) => {
       console.log("pending");
