@@ -17,7 +17,12 @@ const Posts = () => {
 
   useEffect(() => {
     dispatch(setPage(Number(searchParams.get("page") || 1)));
-    dispatch(fetchPosts(searchParams.get("page") || 1));
+    dispatch(
+      fetchPosts({
+        page: Number(searchParams.get("page") || 1),
+        search: searchParams.get("search"),
+      })
+    );
   }, [dispatch, searchParams]);
 
   // useEffect(() => {

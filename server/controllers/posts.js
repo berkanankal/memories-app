@@ -2,31 +2,41 @@ const Post = require("../models/Post");
 const asyncHandler = require("express-async-handler");
 
 const getAllPosts = asyncHandler(async (req, res) => {
-  const query = Post.find().populate("creator", "name surname");
+  let query = Post.find().populate("creator", "name surname");
+  let total = await Post.countDocuments();
+
+  // Search
+  if (req.query.search) {
+    const regex = new RegExp(req.query.search, "i");
+
+    query = query.where({ title: regex });
+
+    total = await Post.countDocuments({ title: regex });
+  }
 
   // Pagination
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 6;
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
-  const total = await Post.countDocuments();
 
   const pages = Math.ceil(total / limit);
-  const posts = await query.skip(startIndex).limit(limit);
 
-  const pagination = {};
-  if (startIndex > 0) {
-    pagination.prev = {
-      page: page - 1,
-      limit,
-    };
-  }
-  if (endIndex < total) {
-    pagination.next = {
-      page: page + 1,
-      limit,
-    };
-  }
+  // const pagination = {};
+  // if (startIndex > 0) {
+  //   pagination.prev = {
+  //     page: page - 1,
+  //     limit,
+  //   };
+  // }
+  // if (endIndex < total) {
+  //   pagination.next = {
+  //     page: page + 1,
+  //     limit,
+  //   };
+  // }
+
+  const posts = await query.skip(startIndex).limit(limit);
 
   return res.status(200).json({
     success: true,

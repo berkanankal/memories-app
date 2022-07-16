@@ -2,9 +2,12 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import * as API from "./api/posts";
 
-export const fetchPosts = createAsyncThunk("posts/fetchPosts", (page) => {
-  return API.fetchPosts(page).then((res) => res.data);
-});
+export const fetchPosts = createAsyncThunk(
+  "posts/fetchPosts",
+  ({ page, searchQuery }) => {
+    return API.fetchPosts(page, searchQuery).then((res) => res.data);
+  }
+);
 
 export const fetchPostById = createAsyncThunk("posts/fetchPostById", (id) => {
   return API.fetchPostById(id).then((res) => res.data);

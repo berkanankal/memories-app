@@ -1,18 +1,10 @@
 import React from "react";
-import {
-  Container,
-  Grow,
-  Grid,
-  AppBar,
-  TextField,
-  Button,
-  Paper,
-} from "@mui/material";
+import { Container, Grow, Grid, Paper } from "@mui/material";
 import Posts from "../Posts";
 import Form from "../Form";
 import useStyles from "./styles";
-import Chip from "@mui/material/Chip";
 import Pagination from "../Pagination";
+import SearchForm from "../SearchForm";
 
 const Home = () => {
   const classes = useStyles();
@@ -31,30 +23,7 @@ const Home = () => {
             <Posts />
           </Grid>
           <Grid item xs={12} md={3}>
-            <AppBar
-              className={classes.appBarSearch}
-              position="static"
-              color="inherit"
-            >
-              <TextField
-                name="search"
-                variant="outlined"
-                label="Search Memories"
-                fullWidth
-              />
-              <Chip
-                style={{ margin: "10px 0" }}
-                label="Search Tags"
-                variant="outlined"
-              />
-              <Button
-                className={classes.searchButton}
-                variant="contained"
-                color="primary"
-              >
-                Search
-              </Button>
-            </AppBar>
+            <SearchForm />
 
             <Form />
 
