@@ -1,38 +1,45 @@
 import { useState } from "react";
 import { AppBar, TextField, Button, Chip } from "@mui/material";
 import useStyles from "./styles";
-import { fetchPosts } from "../../redux/postsSlice";
-import { useDispatch } from "react-redux";
+import { fetchPosts, setSearchQuery } from "../../redux/postsSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 
 const SearchForm = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState("");
+
+  const { searchQuery } = useSelector((state) => state.posts);
 
   const handleChange = (e) => {
-    setSearchQuery(e.target.value);
+    setSearch(e.target.value);
   };
 
-  const searchPost = () => {
-    console.log(searchQuery);
-    dispatch(fetchPosts({ page: 1, searchQuery }));
+  const handleClickButton = (e) => {
+    if (!search) return;
+    setSearchParams({ search: search, page: 1 });
+    setSearch("");
   };
 
   return (
     <AppBar className={classes.appBarSearch} position="static" color="inherit">
       <TextField
+        value={search}
         name="search"
         variant="outlined"
         label="Search Memories"
         fullWidth
         onChange={handleChange}
       />
-      <Chip
+      <Button
         style={{ margin: "10px 0" }}
-        label="Search Tags"
-        variant="outlined"
-      />
-      <Button variant="contained" color="primary" onClick={searchPost}>
+        variant="contained"
+        color="primary"
+        fullWidth
+        onClick={handleClickButton}
+      >
         Search
       </Button>
     </AppBar>

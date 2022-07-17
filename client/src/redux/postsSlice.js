@@ -82,6 +82,7 @@ export const postsSlice = createSlice({
     },
     numberOfPages: 0,
     page: 1,
+    searchQuery: "",
     totalPosts: 0,
     limit: 0,
     currentId: null,
@@ -96,6 +97,9 @@ export const postsSlice = createSlice({
     },
     setPage: (state, action) => {
       state.page = action.payload;
+    },
+    setSearchQuery: (state, action) => {
+      state.searchQuery = action.payload;
     },
   },
   extraReducers: {
@@ -139,8 +143,6 @@ export const postsSlice = createSlice({
       state.totalPosts--;
       if (state.totalPosts === (state.numberOfPages - 1) * state.limit) {
         state.numberOfPages -= 1;
-        console.log(state.numberOfPages);
-        console.log(state.page);
         if (state.numberOfPages === state.page - 1) {
           state.page -= 1;
         }
@@ -174,6 +176,7 @@ export const postsSlice = createSlice({
   },
 });
 
-export const { setCurrentId, resetErrorMessage, setPage } = postsSlice.actions;
+export const { setCurrentId, resetErrorMessage, setPage, setSearchQuery } =
+  postsSlice.actions;
 
 export default postsSlice.reducer;

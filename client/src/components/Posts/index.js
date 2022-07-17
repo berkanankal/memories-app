@@ -11,18 +11,14 @@ const Posts = () => {
   const classes = useStyles();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { posts, page, totalPosts, numberOfPages, limit } = useSelector(
+  const { posts, totalPosts, numberOfPages, limit } = useSelector(
     (state) => state.posts
   );
 
   useEffect(() => {
-    dispatch(setPage(Number(searchParams.get("page") || 1)));
-    dispatch(
-      fetchPosts({
-        page: Number(searchParams.get("page") || 1),
-        search: searchParams.get("search"),
-      })
-    );
+    const page = searchParams.get("page");
+    const searchQuery = searchParams.get("search");
+    dispatch(fetchPosts({ page: page, searchQuery: searchQuery }));
   }, [dispatch, searchParams]);
 
   // useEffect(() => {
@@ -33,10 +29,6 @@ const Posts = () => {
   //     setSearchParams({ page: page - 1 });
   //   }
   // }, [numberOfPages, limit, page, totalPosts, setSearchParams]);
-
-  useEffect(() => {
-    setSearchParams({ page: page });
-  }, [page, setSearchParams]);
 
   return (
     <Grid

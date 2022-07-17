@@ -1,10 +1,13 @@
 import API from "./index";
 
 export const fetchPosts = (page, searchQuery) => {
-  if (searchQuery) {
+  if (searchQuery && page) {
     return API.get(`/posts?page=${page}&search=${searchQuery}`);
   }
-  return API.get(`/posts?page=${page}`);
+  if (page) {
+    return API.get(`/posts?page=${page}`);
+  }
+  return API.get(`/posts`);
 };
 
 export const fetchPostById = (id) => API.get(`/posts/${id}`);

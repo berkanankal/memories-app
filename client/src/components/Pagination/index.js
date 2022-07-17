@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setPage } from "../../redux/postsSlice";
 import { useSearchParams } from "react-router-dom";
+import { fetchPosts } from "../../redux/postsSlice";
 
 import useStyles from "./styles";
 
@@ -15,20 +16,23 @@ const Paginate = () => {
 
   const { numberOfPages, page } = useSelector((state) => state.posts);
 
+  const handleChange = (e, value) => {
+    if (searchParams.get("search")) {
+      setSearchParams({ search: searchParams.get("search"), page: value });
+    } else {
+      setSearchParams({ page: value });
+    }
+  };
+
   return (
     <Pagination
+      onChange={handleChange}
       classes={{ ul: classes.ul }}
       count={numberOfPages}
-      page={page}
+      page={Number(searchParams.get("page") || 1)}
       variant="outlined"
       color="primary"
-      renderItem={(item) => (
-        <PaginationItem
-          {...item}
-          component={Link}
-          to={`/posts?page=${item.page}`}
-        />
-      )}
+      renderItem={(item) => <PaginationItem {...item} />}
     />
   );
 };
