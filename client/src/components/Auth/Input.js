@@ -13,6 +13,9 @@ const Input = ({
   autoFocus,
   type,
   handleShowPassword,
+  error,
+  helperText,
+  onBlur,
 }) => (
   <Grid item xs={12} sm={half ? 6 : 12}>
     <TextField
@@ -25,6 +28,9 @@ const Input = ({
       label={label}
       autoFocus={autoFocus}
       type={type}
+      error={error}
+      helperText={helperText}
+      onBlur={onBlur}
       InputProps={
         name === "password"
           ? {

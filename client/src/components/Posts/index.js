@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Grid } from "@mui/material";
+import { Grid, CircularProgress, Alert } from "@mui/material";
 import Post from "./Post";
 import useStyles from "./styles";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,9 +11,7 @@ const Posts = () => {
   const classes = useStyles();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { posts, totalPosts, numberOfPages, limit } = useSelector(
-    (state) => state.posts
-  );
+  const { posts, status } = useSelector((state) => state.posts);
 
   useEffect(() => {
     const page = searchParams.get("page");
@@ -30,6 +28,25 @@ const Posts = () => {
   //   }
   // }, [numberOfPages, limit, page, totalPosts, setSearchParams]);
 
+  if (status === "loading") {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress disableShrink size={50} />
+      </div>
+    );
+  }
+
+  if (status === "succeeded" && posts.length === 0) {
+    return <Alert severity="error">No posts found</Alert>;
+  }
+
   return (
     <Grid
       className={classes.container}
@@ -37,11 +54,12 @@ const Posts = () => {
       alignItems="stretch"
       spacing={3}
     >
-      {posts.map((post) => (
-        <Grid item xs={12} sm={12} md={6} lg={4} key={post._id}>
-          <Post post={post} />
-        </Grid>
-      ))}
+      {status === "succeeded" &&
+        posts.map((post) => (
+          <Grid item xs={12} sm={12} md={6} lg={4} key={post._id}>
+            <Post post={post} />
+          </Grid>
+        ))}
     </Grid>
   );
 };

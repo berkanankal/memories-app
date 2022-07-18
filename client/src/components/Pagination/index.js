@@ -28,7 +28,7 @@ const Paginate = () => {
     <Pagination
       onChange={handleChange}
       classes={{ ul: classes.ul }}
-      count={numberOfPages}
+      count={numberOfPages || 1}
       page={Number(searchParams.get("page") || 1)}
       variant="outlined"
       color="primary"

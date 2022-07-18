@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 const App = () => {
   const dispatch = useDispatch();
   const { posts, error } = useSelector((state) => state.posts);
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (error) {
@@ -41,7 +42,10 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Navigate to="/posts" />} />
           <Route path="/posts" element={<Home />} />
-          <Route path="/auth" element={<Auth />} />
+          <Route
+            path="/auth"
+            element={user ? <Navigate to="/posts" /> : <Auth />}
+          />
           <Route path="/posts/:id" element={<PostDetails />} />
         </Routes>
       </BrowserRouter>

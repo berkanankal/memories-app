@@ -75,6 +75,7 @@ export const postsSlice = createSlice({
   name: "posts",
   initialState: {
     posts: [],
+    status: "idle",
     post: {
       data: {},
       status: "idle",
@@ -103,7 +104,11 @@ export const postsSlice = createSlice({
     },
   },
   extraReducers: {
+    [fetchPosts.pending]: (state, action) => {
+      state.status = "loading";
+    },
     [fetchPosts.fulfilled]: (state, action) => {
+      state.status = "succeeded";
       state.posts = action.payload.data;
       state.numberOfPages = action.payload.numberOfPages;
       state.totalPosts = action.payload.totalPosts;

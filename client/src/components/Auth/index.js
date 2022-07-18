@@ -14,23 +14,67 @@ import Input from "./Input";
 import { register, login, resetInitialState } from "../../redux/authSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const Auth = () => {
-  const [form, setForm] = useState({
-    name: "",
-    surname: "",
-    email: "",
-    password: "",
-    rePassword: "",
-  });
   const [isSignupForm, setIsSignupForm] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const classes = useStyles();
   const navigate = useNavigate();
-  const { isLoading, error, isLoggedIn, isSignup, user } = useSelector(
+  const { error, isLoggedIn, isSignup, user } = useSelector(
     (state) => state.auth
   );
+
+  const loginAndRegisterSchema = Yup.object().shape({
+    name: Yup.string()
+      .min(3, "Name must be at least 3 characters")
+      .max(30, "Name must be at most 30 characters")
+      .required("Name is required"),
+    surname: Yup.string()
+      .min(2, "Surname must be at least 2 characters")
+      .max(30, "Surname must be at most 30 characters")
+      .required("Surname is required"),
+    email: Yup.string()
+      .email("Please enter a valid email")
+      .required("Email is required"),
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters")
+      .max(32, "Password must be at most 32 characters")
+      .required("Password is required"),
+    rePassword: Yup.string()
+      .oneOf([Yup.ref("password")], "Passwords must match")
+      .required("Re-Password is required"),
+  });
+
+  const {
+    handleSubmit,
+    handleChange,
+    handleBlur,
+    values,
+    resetForm,
+    errors,
+    touched,
+  } = useFormik({
+    initialValues: {
+      name: "",
+      surname: "",
+      email: "",
+      password: "",
+      rePassword: "",
+    },
+    validationSchema: loginAndRegisterSchema,
+    onSubmit: (values) => {
+      console.log(values);
+      // if (isSignupForm) {
+      //   dispatch(register(values));
+      // } else {
+      //   const loginForm = { email: values.email, password: values.password };
+      //   dispatch(login(loginForm));
+      // }
+    },
+  });
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -47,7 +91,7 @@ const Auth = () => {
     }
     if (isSignup) {
       setIsSignupForm(false);
-      clearForm();
+      resetForm();
       setShowPassword(false);
       toast.success("Kayıt işlemi başarılı", {
         position: "bottom-right",
@@ -72,39 +116,15 @@ const Auth = () => {
     }
 
     dispatch(resetInitialState());
-  }, [isLoggedIn, error, navigate, user, isSignup, dispatch]);
+  }, [isLoggedIn, error, navigate, user, isSignup, dispatch, resetForm]);
 
   const switchMode = () => {
-    clearForm();
+    resetForm();
     setIsSignupForm(!isSignupForm);
     setShowPassword(false);
   };
 
   const handleShowPassword = () => setShowPassword(!showPassword);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (isSignupForm) {
-      dispatch(register(form));
-    } else {
-      const loginForm = { email: form.email, password: form.password };
-      dispatch(login(loginForm));
-    }
-  };
-
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
-
-  const clearForm = () => {
-    setForm({
-      name: "",
-      surname: "",
-      email: "",
-      password: "",
-      rePassword: "",
-    });
-  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -121,43 +141,65 @@ const Auth = () => {
               <>
                 <Input
                   name="name"
-                  value={form.name}
+                  value={values.name}
                   label="First Name"
                   handleChange={handleChange}
-                  autoFocus
                   half
+                  error={errors.name && touched.name ? true : false}
+                  helperText={errors.name && touched.name ? errors.name : null}
+                  onBlur={handleBlur}
                 />
                 <Input
                   name="surname"
-                  value={form.surname}
+                  value={values.surname}
                   label="Last Name"
                   handleChange={handleChange}
                   half
+                  error={errors.surname && touched.surname ? true : false}
+                  helperText={
+                    errors.surname && touched.surname ? errors.surname : null
+                  }
+                  onBlur={handleBlur}
                 />
               </>
             )}
             <Input
               name="email"
-              value={form.email}
               label="Email Address"
+              onBlur={handleBlur}
               handleChange={handleChange}
+              value={values.email}
               type="email"
+              error={errors.email && touched.email ? true : false}
+              helperText={errors.email && touched.email ? errors.email : null}
             />
             <Input
               name="password"
-              value={form.password}
+              value={values.password}
               label="Password"
               handleChange={handleChange}
               type={showPassword ? "text" : "password"}
               handleShowPassword={handleShowPassword}
+              error={errors.password && touched.password ? true : false}
+              helperText={
+                errors.password && touched.password ? errors.password : null
+              }
+              onBlur={handleBlur}
             />
             {isSignupForm && (
               <Input
                 name="rePassword"
-                value={form.rePassword}
+                value={values.rePassword}
                 label="Repeat Password"
                 handleChange={handleChange}
                 type="password"
+                error={errors.rePassword && touched.rePassword ? true : false}
+                helperText={
+                  errors.rePassword && touched.rePassword
+                    ? errors.rePassword
+                    : null
+                }
+                onBlur={handleBlur}
               />
             )}
           </Grid>

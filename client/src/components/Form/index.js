@@ -1,13 +1,6 @@
-// Tags inputunu chip inputa çevir
-
 import { useEffect, useState } from "react";
 import { TextField, Button, Typography, Paper } from "@mui/material";
-import {
-  fetchPosts,
-  createPost,
-  updatePost,
-  setCurrentId,
-} from "../../redux/postsSlice";
+import { createPost, updatePost, setCurrentId } from "../../redux/postsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -152,7 +145,6 @@ const Form = () => {
         </div>
         <Button
           className={classes.buttonSubmit}
-          // sx={{ marginBottom: 1 }}
           variant="contained"
           color="primary"
           type="submit"
