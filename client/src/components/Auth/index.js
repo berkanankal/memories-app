@@ -27,7 +27,7 @@ const Auth = () => {
     (state) => state.auth
   );
 
-  const loginAndRegisterSchema = Yup.object().shape({
+  const registerSchema = Yup.object().shape({
     name: Yup.string()
       .min(3, "Name must be at least 3 characters")
       .max(30, "Name must be at most 30 characters")
@@ -48,6 +48,12 @@ const Auth = () => {
       .required("Re-Password is required"),
   });
 
+  const loginSchema = Yup.object().shape({
+    email: Yup.string()
+      .email("Please enter a valid email")
+      .required("Email is required"),
+  });
+
   const {
     handleSubmit,
     handleChange,
@@ -64,15 +70,14 @@ const Auth = () => {
       password: "",
       rePassword: "",
     },
-    validationSchema: loginAndRegisterSchema,
+    validationSchema: isSignupForm ? registerSchema : loginSchema,
     onSubmit: (values) => {
-      console.log(values);
-      // if (isSignupForm) {
-      //   dispatch(register(values));
-      // } else {
-      //   const loginForm = { email: values.email, password: values.password };
-      //   dispatch(login(loginForm));
-      // }
+      if (isSignupForm) {
+        dispatch(register(values));
+      } else {
+        const loginForm = { email: values.email, password: values.password };
+        dispatch(login(loginForm));
+      }
     },
   });
 
