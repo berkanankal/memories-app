@@ -15,9 +15,17 @@ app.use("/api", routes);
 app.use(customErrorHandler);
 app.use("/api", express.static(path.join(__dirname, "public")));
 
-app.get("/", (req, res) => {
-  return res.send("App is running");
-});
+// deployment
+if (process.env.NODE_ENV === "development") {
+  app.use(express.static(path.join(__dirname, "../client/build")));
+  // app.get("*", (req, res) => {
+  //   res.sendFile(path.join(__dirname, "../client/build", "index.html"));
+  // });
+} else {
+  app.get("/", (req, res) => {
+    return res.send("App is running");
+  });
+}
 
 mongoose
   .connect(process.env.MONGO_URI)

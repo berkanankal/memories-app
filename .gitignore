@@ -5,6 +5,7 @@
 # Client
 # /client/src/images
 /client/.env
+/client/build
 
 # Logs
 logs
