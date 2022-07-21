@@ -71,7 +71,7 @@ const Post = ({ post }) => {
       >
         <CardMedia
           className={classes.media}
-          image={`${process.env.REACT_APP_BASE_URL}/uploads/${post.postImage}`}
+          image={`${process.env.REACT_APP_BASE_URL}/posts/images/${post.postImage}`}
           title={post.title}
         />
         <div className={classes.overlay}>

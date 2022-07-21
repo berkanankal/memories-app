@@ -7,6 +7,7 @@ const {
   updatePost,
   likePost,
   getPostById,
+  getPostImageByAws,
 } = require("../controllers/posts");
 const upload = require("../helpers/libraries/multer");
 const {
@@ -20,6 +21,7 @@ const {
 router.get("/", getAllPosts);
 router.get("/:id", checkPostExist, getPostById);
 router.post("/", [getAccessToRoute, upload.single("postImage")], createPost);
+router.get("/images/:key", getPostImageByAws);
 router.delete(
   "/:id",
   [getAccessToRoute, checkPostExist, getPostOwnerAccess],

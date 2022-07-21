@@ -18,8 +18,6 @@ const PostDetails = () => {
     dispatch(fetchPostById(id));
   }, [dispatch, id]);
 
-  console.log(data);
-
   if (status === "loading") {
     return (
       <Paper elevation={6} className={classes.loadingPaper}>
@@ -72,7 +70,7 @@ const PostDetails = () => {
           <div className={classes.imageSection}>
             <img
               className={classes.media}
-              src={`${process.env.REACT_APP_BASE_URL}/uploads/${data.postImage}`}
+              src={`${process.env.REACT_APP_BASE_URL}/posts/images/${data.postImage}`}
               // alt={post.title}
               alt={"deneme"}
             />

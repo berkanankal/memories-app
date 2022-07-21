@@ -1,5 +1,9 @@
 const Post = require("../models/Post");
 const asyncHandler = require("express-async-handler");
+const { uploadFile, getFileStream } = require("../s3");
+const fs = require("fs");
+const util = require("util");
+const unlinkFile = util.promisify(fs.unlink);
 
 const getAllPosts = asyncHandler(async (req, res) => {
   let query = Post.find().populate("creator", "name surname");
@@ -62,6 +66,12 @@ const getPostById = asyncHandler(async (req, res) => {
 const createPost = asyncHandler(async (req, res) => {
   const information = req.body;
 
+  // AWS S3
+  if (req.file) {
+    await uploadFile(req.file);
+    await unlinkFile(req.file.path);
+  }
+
   if (req.savedImage) {
     information.postImage = req.savedImage;
   }
@@ -78,6 +88,13 @@ const createPost = asyncHandler(async (req, res) => {
   });
 });
 
+const getPostImageByAws = asyncHandler(async (req, res) => {
+  const fileKey = req.params.key;
+  const fileStream = getFileStream(fileKey);
+
+  fileStream.pipe(res);
+});
+
 const deletePost = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
@@ -92,6 +109,12 @@ const deletePost = asyncHandler(async (req, res) => {
 const updatePost = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const information = req.body;
+
+  // AWS S3
+  if (req.file) {
+    await uploadFile(req.file);
+    await unlinkFile(req.file.path);
+  }
 
   if (req.savedImage) {
     information.postImage = req.savedImage;
@@ -131,6 +154,7 @@ const likePost = asyncHandler(async (req, res) => {
 module.exports = {
   getAllPosts,
   createPost,
+  getPostImageByAws,
   deletePost,
   updatePost,
   likePost,
