@@ -11,22 +11,4 @@ const getAllUsers = asyncHandler(async (req, res) => {
   });
 });
 
-const deleteAllUsers = asyncHandler(async (req, res) => {
-  await User.deleteMany();
-
-  return res.status(200).json({
-    success: true,
-    message: "All users deleted",
-  });
-});
-
-const deleteAllPosts = asyncHandler(async (req, res) => {
-  await Post.deleteMany();
-
-  return res.status(200).json({
-    success: true,
-    message: "All posts deleted",
-  });
-});
-
-module.exports = { getAllUsers, deleteAllUsers, deleteAllPosts };
+module.exports = { getAllUsers };
