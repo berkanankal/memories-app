@@ -1,10 +1,7 @@
 # Server
-/server/config
 /server/public
 
 # Client
-# /client/src/images
-/client/.env
 /client/build
 
 # Logs
