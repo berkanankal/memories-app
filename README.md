@@ -46,6 +46,7 @@ To run this project, you will need to add the following environment variables to
 <br>
 
 You can watch the video below from the 4:36th minute to the 11:28th minute for aws account opening and configuration processes.
+<br>
 https://www.youtube.com/watch?v=NZElg91l_ms&t=1s
 
 ## Run Locally
