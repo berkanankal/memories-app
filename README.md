@@ -82,7 +82,7 @@ npm start
 
 ## Screenshots
 
-![image](https://user-images.githubusercontent.com/67144252/205117670-ccd34b89-e9ab-4817-8281-423a569f80f5.png)
+![1](https://user-images.githubusercontent.com/67144252/205496400-ecb3a877-07f8-4324-8d5a-989dd11bbaff.png)
 <br>
 <br>
 ![image](https://user-images.githubusercontent.com/67144252/205118117-82c67642-63ff-43c7-8dd5-17bac2b55406.png)
@@ -94,7 +94,9 @@ npm start
 ![image](https://user-images.githubusercontent.com/67144252/205118450-e8ae9ea6-2255-4b37-b042-2eea3ffbb914.png)
 <br>
 <br>
-![image](https://user-images.githubusercontent.com/67144252/205118856-7d681981-fed0-4bc0-8d65-6bab05c64829.png)
+![2](https://user-images.githubusercontent.com/67144252/205496405-5e85a7c8-3260-4d04-837a-276ae54117bf.png)
+
+
 
 
 
