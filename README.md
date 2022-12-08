@@ -4,7 +4,7 @@ A mern stack project where you can share your memories, interact and socialize w
 
 ## Demo
 
-https://mern-memories-app-berkan-ankal.herokuapp.com/posts
+https://mern-app-pxi3.onrender.com
 
 ## Tech Stack
 ### Frontend
