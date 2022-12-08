@@ -7,7 +7,7 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "build": "cd ../client && npm run build",
-    "install-client": "cd ../client && npm install",
+    "install-client": "cd ../client && npm install --force",
     "heroku-postbuild": "npm run install-client && npm run build"
   },
   "keywords": [],
