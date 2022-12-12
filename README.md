@@ -54,13 +54,13 @@ https://www.youtube.com/watch?v=NZElg91l_ms&t=1s
 First clone this repository.
 
 ```bash
-git clone https://github.com/berkanankal/mern-app.git
+git clone https://github.com/berkanankal/memories-app.git
 ```
 
 Go to the project directory.
 
 ```bash
-cd mern-app
+cd memories-app
 ```
 
 Go to the server directory. Install dependencies and run server. Make sure you already have [`nodejs`](https://nodejs.org/en/) & [`npm`](https://www.npmjs.com/) installed in your system.
@@ -72,7 +72,7 @@ npm start
 ```
 
 
-Go to the client directory. Install dependencies and run client.
+Go to the client directory. Install dependencies and run the client.
 
 ```bash
 cd client
