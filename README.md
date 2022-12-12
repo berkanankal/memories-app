@@ -1,4 +1,4 @@
-# Mern App
+# Memories App
 
 A mern stack project where you can share your memories, interact and socialize with the memories of others.
 
