@@ -35,7 +35,7 @@ https://mern-app-pxi3.onrender.com
 
 ## Environment Variables
 
-To run this project, you will need to add the following environment variables to your /server/config/env/config.env file.
+To run this project, you will need to add the following environment variables to your `/server/config/env/config.env` file.
 
 `MONGO_URI`: Your MongoDB URI. <br>
 `JWT_SECRET_KEY`: Anything you can think of. <br><br>
